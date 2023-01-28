@@ -18,9 +18,16 @@ export default class BookService{
         return null;
     }
 
-    async getAll(){
-        let results = await Book.find({});
-        if (results) return results
+    async getAll(page?: number, limit?: number){
+        if (!page) page = 1;
+        if(!limit) limit = 20;
+
+        let results = await Book.find()
+        .skip((page - 1) * limit)
+        .limit(limit)
+        .select(["-createdAt", '-updatedAt']);
+
+        if (results) return results;
         return [];
     }
 
@@ -31,7 +38,19 @@ export default class BookService{
     }
 
     async getByTitle(titleBook: string){
-        let result = await Book.findOne({title: titleBook});
+        let result = await Book.find({title: titleBook});
+        if (result) return result;
+        return null;
+    }
+
+    async getByCategory(categoryId: string, page?: number, limit?: number){
+        if (!page) page = 1;
+        if(!limit) limit = 20;
+
+        let result = await Book.find({categoryId})
+        .skip((page - 1) * limit)
+        .limit(limit)
+        .select(["-createdAt", '-updatedAt']);
         if (result) return result;
         return null;
     }

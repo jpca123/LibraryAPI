@@ -1,6 +1,6 @@
 export default interface UserBook{
     id?: string,
-    idUser: string,
-    idBook: string,
+    userId: string,
+    bookId: string,
     date: Date
 }

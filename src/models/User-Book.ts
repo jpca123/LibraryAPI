@@ -6,11 +6,11 @@ const UserBookSchema = new Schema<UserBook>({
         type: String,
         required: false
     },
-    idUser: {
+    userId: {
         type: String,
         required: true
     },
-    idBook: {
+    bookId: {
         type: String,
         required: true
     },

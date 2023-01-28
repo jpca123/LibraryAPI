@@ -9,8 +9,14 @@ export default class AuthorService{
         return null;
     }
 
-    async getAll(){
-        let results = await Author.find({});
+    async getAll(page?: number, limit?: number){
+        if(!page) page = 1;
+        if(!limit) limit = 20;
+
+        let results = await Author.find()
+        .skip((page - 1)* limit)
+        .limit(limit)
+        .select(["-createAt", "-updateAt"]);
         if (results) return results
         return [];
     }

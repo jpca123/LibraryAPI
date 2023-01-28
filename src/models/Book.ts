@@ -26,6 +26,10 @@ const BookSchema = new Schema<Book>({
         type: Number,
         required: false
     },
+    document: {
+        type: String,
+        require: false
+    },
     authorId: {
         type: String,
         required: true

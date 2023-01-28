@@ -15,35 +15,34 @@ export default class UserService{
     }
 
     async login(username: string, password: string){
-        if(!username || !password) throw new Error("The username or password are incorrects");
-        console.log(username, password)
+        if(!username || !password) return null;
         let user = await User.findOne({userName: username});
-        if (user === null) throw new Error("Not exist a account with this username");
-
-        console.log(password)
+        if (user === null) return null;
 
         let userPasswordDecrypted = this.securityService.decrypt(user.password);
 
-        console.log(password, userPasswordDecrypted)
-        console.log(password === userPasswordDecrypted)
-
         if(password === userPasswordDecrypted){
-            let encrypt = this.securityService.encrypt(JSON.stringify(user));
-            let tokenEncrypted = this.securityService.generateToken({data: encrypt});
+            let tokenEncrypted = this.securityService.generateToken({userName: user.userName});
             return {
-                ok: true,
                 token: tokenEncrypted
             }
         }
-        throw new Error("The username or password are incorrects");
+        return null;
     }
 
     async create(user: IUser){
+        // TODO: agregar validaciones y quitar estas de aqui
         let usernameValidation = await this.getByUserName(user.userName);
-        if (usernameValidation !== null) return null;
+        if (usernameValidation !== null) return {
+            error: "Validation Error",
+            message: "The username already exist"
+        };
         
         if(!user.password) return null;
-        if(user.password.length < 8) return null;
+        if(user.password.length < 8) return {
+            error: "Validation Error",
+            message: "The Password must have 8 charaacters how minim"
+        };
         
         user.password = this.securityService.encrypt(user.password);
         let userCreated = await User.create(user);
@@ -51,8 +50,15 @@ export default class UserService{
         return null;
     }
 
-    async getAll(){
-        let results = await User.find({});
+    async getAll(page?: number, limit?: number){
+        if(!page) page = 1;
+        if(!limit) limit = 20;
+
+        let results = await User.find()
+        .skip((page - 1)* limit)
+        .limit(limit)
+        .select(["-password", "-createAt", "-updateAt"]);
+
         if (results) return results
         return [];
     }
@@ -64,22 +70,26 @@ export default class UserService{
     }
 
     async getBooks(id: string){
-        let user = this.getById(id);
+        let user = User.findById(id);
         if(user === null) return null;
         
         let books = await UserBook.find({userId: id});
         return books;
     }
     async setBook (userId: string, bookId: string){
-        let user = await this.getById(userId);
+        let user = await User.findById(userId);
         if(user === null) return null;
 
         let book = await this.bookService.getById(bookId);
         if(book === null) return null;
 
+        // validando si el libro ya ha sido añadido
+        let bookAdded = await UserBook.findOne({userId, bookId});
+        if (bookAdded) return null;
+
         let relation = await UserBook.create({
-            userId,
-            bookId,
+            userId: userId,
+            bookId: bookId,
             date: new Date()
         });
 
@@ -88,11 +98,8 @@ export default class UserService{
     }
 
     async deleteUserBook (userId: string, bookId: string){
-        let user = await this.getById(userId);
+        let user = await User.findById(userId);
         if(user === null) return null;
-
-        let book = await this.bookService.getById(bookId);
-        if(book === null) return null;
 
         let deleted = await UserBook.findOne({userId, bookId});
         if(deleted) {
@@ -109,7 +116,7 @@ export default class UserService{
     }
 
     async update(id: string, user: IUser){
-        let userSearch = await this.getById(id);
+        let userSearch = await User.findById(id);
         if (!userSearch) return null;
 
         Object.assign(userSearch, user);
@@ -119,7 +126,7 @@ export default class UserService{
     }
 
     async delete(id: string){
-        let userSearch = await this.getById(id);
+        let userSearch = await User.findById(id);
         if(!userSearch) return null;
 
         userSearch.remove();

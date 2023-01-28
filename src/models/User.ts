@@ -8,15 +8,17 @@ const UserSchema = new Schema<User>({
     },
     userName: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     email: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     name: {
         type: String,
-        required: true
+        required: true,
     },
     lastName: {
         type: String,

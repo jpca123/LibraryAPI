@@ -5,6 +5,7 @@ export default interface Book{
     description?: string,
     date?: Date,
     pages?: number,
+    document?: string,
     categoryId: string,
     authorId: string
 }
