@@ -22,6 +22,9 @@ const AuthorSchema = new Schema<Author>({
         type: String,
         required: false
     }
+},{
+    versionKey: false,
+    timestamps: true
 },)
 
 export default model("Author", AuthorSchema);

@@ -8,7 +8,14 @@ const authorService: AuthorService = new AuthorService();
 
 export async function getAllAuthors(req: Request, res: Response) {
     try {
-        let result = await authorService.getAll();
+        let page = null;
+        if(req.query.page) page = parseInt(req.query.page as string);
+        else page = 1;
+
+        let limit = null;
+        if(req.query.limit) limit = parseInt(req.query.limit as string);
+        else limit = 20;
+        let result = await authorService.getAll(page, limit);
         res.json(result);
     } catch (err: any) {
         return HttpErrorHandler(res, err);
@@ -53,6 +60,7 @@ export async function deleteAuthor(req: Request, res: Response) {
         let result = await authorService.delete(id);
 
         if (result === null) return HttpErrorHandler(res, new Error("Delete failed"), 401);
+        res.json({ok: true});
     } catch (err: any) {
         return HttpErrorHandler(res, err);
     }

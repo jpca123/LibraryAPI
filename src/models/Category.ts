@@ -4,7 +4,7 @@ import Category from "../interfaces/Category";
 const CategorySchema = new Schema<Category>({
     id: {
         type: String,
-        required: true
+        required: false
     },
     category: {
         type: String,
