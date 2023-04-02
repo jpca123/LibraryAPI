@@ -2,10 +2,6 @@ import { model, Schema } from "mongoose";
 import Author from "../interfaces/Author";
 
 const AuthorSchema = new Schema<Author>({
-    id: {
-        type: String,
-        required: false
-    },
     name: {
         type: String,
         required: true

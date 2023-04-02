@@ -7,16 +7,6 @@ import HttpErrorHandler from "../utilities/httpErrorHandler";
 const securityService: SecurityService = new SecurityService()
 const userService: UserService = new UserService();
 
-export async function login(req: Request, res: Response) {
-    try {
-        let { userName, password } = req.body;
-        let logueo = await userService.login(userName, password);
-        res.json(logueo);
-    } catch (err: any) {
-        return HttpErrorHandler(res, err);
-    }
-
-}
 
 export async function getAllUsers(req: ReqUserExt, res: Response) {
     try {
@@ -74,17 +64,6 @@ export async function setBook(req: ReqUserExt, res: Response) {
     }
 }
 
-export async function createUser(req: Request, res: Response) {
-    try {
-        let user = req.body;
-        let userCreated = await userService.create(user);
-
-        if (userCreated === null) return HttpErrorHandler(res, new Error("Creation failed"), 401);
-        res.json(userCreated);
-    } catch (err: any) {
-        return HttpErrorHandler(res, err);
-    }
-}
 
 export async function updateUser(req: Request, res: Response) {
     try {

@@ -17,8 +17,8 @@ export default class AuthorService{
         .skip((page - 1)* limit)
         .limit(limit)
         .select(["-createAt", "-updateAt"]);
-        if (results) return results
-        return [];
+        if (results) return {data: results};
+        return {data: []};
     }
 
     async getById(id: string){

@@ -14,42 +14,6 @@ export default class UserService{
         this.securityService = new SecurityService();
     }
 
-    async login(username: string, password: string){
-        if(!username || !password) return null;
-        let user = await User.findOne({userName: username});
-        if (user === null) return null;
-
-        let userPasswordDecrypted = this.securityService.decrypt(user.password);
-
-        if(password === userPasswordDecrypted){
-            let tokenEncrypted = this.securityService.generateToken({userName: user.userName});
-            return {
-                token: tokenEncrypted
-            }
-        }
-        return null;
-    }
-
-    async create(user: IUser){
-        // TODO: agregar validaciones y quitar estas de aqui
-        let usernameValidation = await this.getByUserName(user.userName);
-        if (usernameValidation !== null) return {
-            error: "Validation Error",
-            message: "The username already exist"
-        };
-        
-        if(!user.password) return null;
-        if(user.password.length < 8) return {
-            error: "Validation Error",
-            message: "The Password must have 8 charaacters how minim"
-        };
-        
-        user.password = this.securityService.encrypt(user.password);
-        let userCreated = await User.create(user);
-        if (userCreated) return userCreated;
-        return null;
-    }
-
     async getAll(page?: number, limit?: number){
         if(!page) page = 1;
         if(!limit) limit = 20;
@@ -59,8 +23,8 @@ export default class UserService{
         .limit(limit)
         .select(["-password", "-createAt", "-updateAt"]);
 
-        if (results) return results
-        return [];
+        if (results) return {data: results};
+        return {data: []};
     }
 
     async getById(id: string){
@@ -69,12 +33,30 @@ export default class UserService{
         return null;
     }
 
-    async getBooks(id: string){
-        let user = User.findById(id);
+    async getByEmail(email: string){
+        let result = await User.findOne({email});
+        if(result) return result;
+        return null;
+    }
+
+    async getByUserName(username: string){
+        let result = await User.findOne({userName: username});
+        if (result) return result;
+        return null;
+    }
+
+    async getBooks(id: string, page?: number, limit?: number){
+        if(!page) page = 1;
+        if(!limit) limit = 20;
+
+        let user = User.findById(id)
+        .skip((page - 1)* limit)
+        .limit(limit)
+        .select(["-password", "-createAt", "-updateAt"]);
         if(user === null) return null;
         
         let books = await UserBook.find({userId: id});
-        return books;
+        return {data: books};
     }
     async setBook (userId: string, bookId: string){
         let user = await User.findById(userId);
@@ -109,11 +91,6 @@ export default class UserService{
         return null;
     }
 
-    async getByUserName(username: string){
-        let result = await User.findOne({userName: username});
-        if (result) return result;
-        return null;
-    }
 
     async update(id: string, user: IUser){
         let userSearch = await User.findById(id);

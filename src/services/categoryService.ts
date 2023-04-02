@@ -18,8 +18,8 @@ export default class CategoryService{
         .limit(limit)
         .select(['-createAt', "-updateAt"]);
 
-        if (results) return results
-        return [];
+        if (results) return {data: results};
+        return {data: []};
     }
 
     async getById(id: string){

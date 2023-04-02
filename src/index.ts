@@ -23,16 +23,15 @@ app.use(router);
 
 // db mongo connection
 
-// mongoose.connect(env.MONGO_URI || "")
 mongoose.connect(env.MONGO_LOCAL_URI || "")
 .then(()=> console.log("MongoDB run (Local)"))
-.catch(err => {
+.catch((err: any) => {
     console.log("fallo la conexion a mongoDB");
-    console.log(err);
+    console.log(err.message);
 })
 // routes
 app.get("/", (req: Request, res: Response)=>{
-    res.send("Welcome to Library App, a Rest API for admin a simple library");
+    res.send("<h1>Welcome to Library App, a <mark>Rest API</mark> for admin a simple library</h1>");
 })
 
 

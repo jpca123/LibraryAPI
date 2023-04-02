@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createUser, deleteUser, deleteUserBook, getAllUsers, getBooks, setBook, getUser,  updateUser } from "../controllers/userController";
+import { deleteUser, deleteUserBook, getAllUsers, getBooks, setBook, getUser,  updateUser } from "../controllers/userController";
 import { validateSesion } from "../middelwares/authentication";
 
 const router = Router();

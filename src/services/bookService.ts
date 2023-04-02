@@ -27,8 +27,8 @@ export default class BookService{
         .limit(limit)
         .select(["-createdAt", '-updatedAt']);
 
-        if (results) return results;
-        return [];
+        if (results) return {data: results};
+        return {data: []};
     }
 
     async getById(id: string){
