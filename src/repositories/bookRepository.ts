@@ -27,8 +27,8 @@ export default class BookRepository{
         .limit(limit)
         .select(["-createdAt", '-updatedAt']);
 
-        if (results) return {data: results};
-        return {data: []};
+        if (results) return results;
+        return [];
     }
 
     async getById(id: string){
@@ -52,7 +52,7 @@ export default class BookRepository{
         .limit(limit)
         .select(["-createdAt", '-updatedAt']);
         if (result) return result;
-        return null;
+        return [];
     }
 
     async getByAuthor(authorSearchId: string){

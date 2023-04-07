@@ -17,7 +17,7 @@ export async function getAllBooks(req: Request, res: Response) {
         else limit = 20;
 
         let result = await bookRepository.getAll(page, limit);
-        res.json(result);
+        res.json({data: result});
     } catch (err: any) {
         return HttpErrorHandler(res, err);
     }
@@ -28,7 +28,7 @@ export async function getBook(req: Request, res: Response) {
         let id: string = req.params.id;
         let result = await bookRepository.getById(id);
         if (result === null) return res.send("Book not found");
-        res.json(result);
+        res.json({data: result});
     } catch (err: any) {
         return HttpErrorHandler(res, err);
     }
@@ -56,7 +56,7 @@ export async function getBookByCategory(req: Request, res: Response) {
         else limit = 20;
 
         let result = await bookRepository.getByCategory(id, page, limit);
-        res.json(result);
+        res.json({data: result});
     } catch (err: any) {
         return HttpErrorHandler(res, err);
     }

@@ -30,7 +30,18 @@ export default class AuthRepository {
             await Session.findOneAndRemove({ userName: user.userName });
 
             let createSession = await Session.create({ userName: user.userName, token: tokenEncrypted });
-            if (createSession) return { token: tokenEncrypted };
+            if (createSession) {
+                let infoMail: MailOptions = {
+                    from: env.EMAILUSER,
+                    to: user.email,
+                    subject: "Sesion started",
+                    text: `${user.userName}, you are started a session in your account, if are not you plis change your password now`,
+                    html: `<p>${user.userName}, you are started a session in your account, if are not you plis change your password now`
+                };
+
+                await sendMail(infoMail);
+                return { token: tokenEncrypted };
+            } 
 
             return {
                 error: new Error("Create Session failed")

@@ -28,4 +28,4 @@ let uploadMiddelware = multer({
     },
     limits: { fieldSize: 10000000 }
 });
-export default uploadMiddelware
+export default uploadMiddelware;

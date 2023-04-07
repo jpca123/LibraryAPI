@@ -17,8 +17,8 @@ export default class AuthorRepository{
         .skip((page - 1)* limit)
         .limit(limit)
         .select(["-createAt", "-updateAt"]);
-        if (results) return {data: results};
-        return {data: []};
+        if (results) return results;
+        return [];
     }
 
     async getById(id: string){
