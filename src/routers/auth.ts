@@ -5,8 +5,7 @@ import { validateUser } from "../validators/userValidator";
 
 const router = Router();
 
-// router.post("/register", validateUser, register); TODO: para cuando arregle las validaciones
-router.post("/register", register); 
+router.post("/register", validateUser, register);
 router.post("/login", login);
 router.post("/logout", validateSesion, logout);
 router.post("/validSession", validSession);

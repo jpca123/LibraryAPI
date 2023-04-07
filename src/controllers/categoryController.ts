@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 import Category from "../interfaces/Category";
-import CategoryService from "../services/categoryService";
+import CategoryRepository from "../repositories/categoryRepository";
 import HttpErrorHandler from "../utilities/httpErrorHandler";
 
-const categoryService: CategoryService = new CategoryService();
+const categoryRepository: CategoryRepository = new CategoryRepository();
 
 
 export async function getAllCategories(req: Request, res: Response) {
@@ -16,8 +16,8 @@ export async function getAllCategories(req: Request, res: Response) {
         if(req.query.limit) limit = parseInt(req.query.limit as string);
         else limit = 20;
 
-        let result = await categoryService.getAll(page, limit);
-        res.json(result);
+        let result = await categoryRepository.getAll(page, limit);
+        res.json({data: result});
     } catch (err: any) {
         return HttpErrorHandler(res, err);
     }
@@ -25,9 +25,9 @@ export async function getAllCategories(req: Request, res: Response) {
 export async function getCategory(req: Request, res: Response) {
     try {
         let id: string = req.params.id;
-        let result = await categoryService.getById(id);
+        let result = await categoryRepository.getById(id);
         if(result === null) return res.send("Category not found");
-        res.json(result);
+        res.json({data: result});
     } catch (err: any) {
         return HttpErrorHandler(res, err);
     }
@@ -35,10 +35,10 @@ export async function getCategory(req: Request, res: Response) {
 export async function createCategory(req: Request, res: Response) {
     try {
         let category = req.body;
-        let categoryCreated = await categoryService.create(category);
+        let categoryCreated = await categoryRepository.create(category);
 
         if (categoryCreated === null) return HttpErrorHandler(res, new Error("Creation falied"), 403);
-        res.json(categoryCreated);
+        res.json({data: categoryCreated});
     } catch (err: any) {
         return HttpErrorHandler(res, err);
     }
@@ -47,10 +47,10 @@ export async function updateCategory(req: Request, res: Response) {
     try {
         let id: string = req.params.id;
         let category = req.body;
-        let categoryUpdated = await categoryService.update(id, category);
+        let categoryUpdated = await categoryRepository.update(id, category);
 
         if (categoryUpdated === null) return HttpErrorHandler(res, new Error("Updated failed"), 403);
-        res.json(categoryUpdated);
+        res.json({data: categoryUpdated});
     } catch (err: any) {
         return HttpErrorHandler(res, err);
     }
@@ -58,9 +58,10 @@ export async function updateCategory(req: Request, res: Response) {
 export async function deleteCategory(req: Request, res: Response) {
     try {
         let id: string = req.params.id;
-        let result = await categoryService.delete(id);
+        let result = await categoryRepository.delete(id);
 
         if (result === null) return HttpErrorHandler(res, new Error("Delete failed"), 403);
+        return res.json({ok: true})
     } catch (err: any) {
         return HttpErrorHandler(res, err);
     }

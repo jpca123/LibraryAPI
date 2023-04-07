@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 import Author from "../interfaces/Author";
-import AuthorService from "../services/authorService";
+import AuthorRepository from "../repositories/authorRepository";
 import HttpErrorHandler from "../utilities/httpErrorHandler";
 
-const authorService: AuthorService = new AuthorService();
+const authorRepository: AuthorRepository = new AuthorRepository();
 
 
 export async function getAllAuthors(req: Request, res: Response) {
@@ -15,8 +15,8 @@ export async function getAllAuthors(req: Request, res: Response) {
         let limit = null;
         if(req.query.limit) limit = parseInt(req.query.limit as string);
         else limit = 20;
-        let result = await authorService.getAll(page, limit);
-        res.json(result);
+        let result = await authorRepository.getAll(page, limit);
+        res.json({data: result});
     } catch (err: any) {
         return HttpErrorHandler(res, err);
     }
@@ -24,9 +24,9 @@ export async function getAllAuthors(req: Request, res: Response) {
 export async function getAuthor(req: Request, res: Response) {
     try {
         let id: string = req.params.id;
-        let result = await authorService.getById(id);
+        let result = await authorRepository.getById(id);
         if(result === null) HttpErrorHandler(res, new Error("Author not found"), 404);
-        res.json(result);
+        res.json({data: result});
     } catch (err: any) {
         return HttpErrorHandler(res, err);
     }
@@ -34,10 +34,10 @@ export async function getAuthor(req: Request, res: Response) {
 export async function createAuthor(req: Request, res: Response) {
     try {
         let author = req.body;
-        let authorCreated = await authorService.create(author);
+        let authorCreated = await authorRepository.create(author);
 
         if (authorCreated === null) return HttpErrorHandler(res, new Error("Creation falied"), 401);
-        res.json(authorCreated);
+        res.json({data: authorCreated});
     } catch (err: any) {
         return HttpErrorHandler(res, err);
     }
@@ -46,10 +46,10 @@ export async function updateAuthor(req: Request, res: Response) {
     try {
         let id: string = req.params.id;
         let author = req.body;
-        let authorUpdated = await authorService.update(id, author);
+        let authorUpdated = await authorRepository.update(id, author);
 
         if (authorUpdated === null) return HttpErrorHandler(res, new Error("Updated failed"), 401);
-        res.json(authorUpdated);
+        res.json({data: authorUpdated});
     } catch (err: any) {
         return HttpErrorHandler(res, err);
     }
@@ -57,7 +57,7 @@ export async function updateAuthor(req: Request, res: Response) {
 export async function deleteAuthor(req: Request, res: Response) {
     try {
         let id: string = req.params.id;
-        let result = await authorService.delete(id);
+        let result = await authorRepository.delete(id);
 
         if (result === null) return HttpErrorHandler(res, new Error("Delete failed"), 401);
         res.json({ok: true});

@@ -1,6 +1,0 @@
-GET http://localhost:3000/user
-
-###
-
-
-GET http://localhost:3000/xp

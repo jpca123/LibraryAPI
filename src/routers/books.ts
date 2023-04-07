@@ -14,18 +14,13 @@ router.get("/author/:id", getBookByAuthor);
 router.get("/category/:id", getBookByCategory);
 router.get("/:id", getBook);
 // router.post("/", validateSesion, validateBook, uploadMiddelware.fields(filesUpload), createBook);
-router.put("/:id", validateSesion, validateBook, uploadMiddelware.fields(filesUpload), updateBook);
+router.put("/:id", validateSesion, uploadMiddelware.fields(filesUpload), validateBook, updateBook);
 router.delete("/:id", validateSesion, deleteBook);
 
 
-// validacion de datos 
-async function logBody(req: Request, res: Response, next: NextFunction){
-    console.log(req.body)
-    console.log(req.files)
-    return next()
-}
 
-router.post("/", logBody, validateBook, createBook); // PARA TEST DE VALIDACIONES
+
+router.post("/", uploadMiddelware.fields(filesUpload), validateBook, createBook); // PARA TEST DE VALIDACIONES
 
 
 export {router};

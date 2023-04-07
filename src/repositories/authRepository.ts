@@ -1,21 +1,21 @@
 import User from "../models/User";
 import IUser from "../interfaces/user";
-import SecurityService from "./securityService";
-import UserService from "./userService";
+import SecurityRepository from "./securityRepository";
+import UserRepository from "./userRepository";
 import Session from "../models/Session";
 import ChangePassword from "../models/ChangePassword";
 import { env } from "process";
 import { MailOptions } from "nodemailer/lib/json-transport";
-import { sendMail } from "../utilities/handleMail";
+import sendMail from "../utilities/handleMail";
 
-export default class AuthService {
+export default class AuthRepository {
 
-    private securityService: SecurityService;
-    private userService: UserService;
+    private securityRepository: SecurityRepository;
+    private userRepository: UserRepository;
 
     constructor() {
-        this.securityService = new SecurityService();
-        this.userService = new UserService();
+        this.securityRepository = new SecurityRepository();
+        this.userRepository = new UserRepository();
     }
 
     async login(username: string, password: string) {
@@ -23,10 +23,10 @@ export default class AuthService {
         let user = await User.findOne({ userName: username });
         if (user === null) return null;
 
-        let userPasswordDecrypted = this.securityService.decrypt(user.password);
+        let userPasswordDecrypted = this.securityRepository.decrypt(user.password);
 
         if (password === userPasswordDecrypted) {
-            let tokenEncrypted = this.securityService.generateToken({ userName: user.userName });
+            let tokenEncrypted = this.securityRepository.generateToken({ userName: user.userName });
             await Session.findOneAndRemove({ userName: user.userName });
 
             let createSession = await Session.create({ userName: user.userName, token: tokenEncrypted });
@@ -51,12 +51,12 @@ export default class AuthService {
 
     async register(user: IUser) {
         // TODO: agregar validaciones y quitar estas de aqui
-        let usernameValidation = await this.userService.getByUserName(user.userName);
+        let usernameValidation = await this.userRepository.getByUserName(user.userName);
         if (usernameValidation !== null) return {
             error: new Error("The username already exist")
         };
 
-        user.password = this.securityService.encrypt(user.password);
+        user.password = this.securityRepository.encrypt(user.password);
         let userCreated = await User.create(user);
         if (userCreated) return userCreated;
         return null;
@@ -65,18 +65,18 @@ export default class AuthService {
     async validSession(token: string) {
         let session = await Session.findOne({ token });
         if (session) {
-            let data = await this.securityService.validToken(token);
+            let data = await this.securityRepository.validToken(token);
             if (data) return true;
         };
         return false;
     }
 
     async forgotPassword(email: string) {
-        let user = await this.userService.getByEmail(email);
+        let user = await this.userRepository.getByEmail(email);
         if (!user) return null;
 
         let userName = user.userName;
-        let token = this.securityService.generateToken({ userName });
+        let token = this.securityRepository.generateToken({ userName });
 
         try {
             await ChangePassword.findOneAndRemove({ userName });
@@ -108,17 +108,17 @@ export default class AuthService {
         let sessionDB = await ChangePassword.findOne({ token });
         if (!sessionDB) return false;
 
-        let validToken = await this.securityService.validToken(token);
+        let validToken = await this.securityRepository.validToken(token);
         if (!validToken) {
             await sessionDB.remove();
             return false
         };
 
 
-        let user = await this.userService.getByUserName(sessionDB.userName);
+        let user = await this.userRepository.getByUserName(sessionDB.userName);
         if (!user) return false;
 
-        user.password = this.securityService.encrypt(newPassword);
+        user.password = this.securityRepository.encrypt(newPassword);
 
         await user.save();
         await sessionDB.remove();

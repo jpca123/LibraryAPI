@@ -1,7 +1,7 @@
 import Category from "../models/Category";
 import ICategory from "../interfaces/Category";
 
-export default class CategoryService{
+export default class CategoryRepository{
 
     async create(category: ICategory){
         let categoryCreated = await Category.create(category);

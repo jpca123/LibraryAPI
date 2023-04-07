@@ -1,10 +1,10 @@
 import { Request, Response, Router } from "express";
 import { env } from "process";
-import BookService from "../services/bookService";
+import BookRepository from "../repositories/bookRepository";
 import HttpErrorHandler from "../utilities/httpErrorHandler";
 
 
-const bookService: BookService = new BookService();
+const bookRepository: BookRepository = new BookRepository();
 
 export async function getAllBooks(req: Request, res: Response) {
     try {
@@ -16,7 +16,7 @@ export async function getAllBooks(req: Request, res: Response) {
         if (req.query.limit) limit = parseInt(req.query.limit as string);
         else limit = 20;
 
-        let result = await bookService.getAll(page, limit);
+        let result = await bookRepository.getAll(page, limit);
         res.json(result);
     } catch (err: any) {
         return HttpErrorHandler(res, err);
@@ -26,7 +26,7 @@ export async function getAllBooks(req: Request, res: Response) {
 export async function getBook(req: Request, res: Response) {
     try {
         let id: string = req.params.id;
-        let result = await bookService.getById(id);
+        let result = await bookRepository.getById(id);
         if (result === null) return res.send("Book not found");
         res.json(result);
     } catch (err: any) {
@@ -37,7 +37,7 @@ export async function getBook(req: Request, res: Response) {
 export async function getBookByAuthor(req: Request, res: Response) {
     try {
         let id: string = req.params.id;
-        let result = await bookService.getByAuthor(id);
+        let result = await bookRepository.getByAuthor(id);
         res.json(result);
     } catch (err: any) {
         return HttpErrorHandler(res, err);
@@ -55,7 +55,7 @@ export async function getBookByCategory(req: Request, res: Response) {
         if (req.query.limit) limit = parseInt(req.query.limit as string);
         else limit = 20;
 
-        let result = await bookService.getByCategory(id, page, limit);
+        let result = await bookRepository.getByCategory(id, page, limit);
         res.json(result);
     } catch (err: any) {
         return HttpErrorHandler(res, err);
@@ -77,8 +77,7 @@ export async function createBook(req: Request, res: Response) {
         // confguracion de la ruta del poster
         if (poster) {
             let urlPoster = null;
-            if (env.NODE_ENV !== "PRODUCTION") urlPoster = `${req.hostname}:${env.PORT || 3800}/${poster?.filename}`;
-            else urlPoster = `${req.hostname}/${poster?.filename}`;
+            urlPoster = `${env.APP_URL}/${poster?.filename}`;
             req.body.poster = urlPoster;
         }
         else req.body.poster = "";
@@ -86,17 +85,16 @@ export async function createBook(req: Request, res: Response) {
         // confguracion de la ruta del file
         if (document) {
             let urlDocument = null;
-            if (env.NODE_ENV !== "PRODUCTION") urlDocument = `${req.hostname}:${env.PORT || 3800}/${document?.filename}`;
-            else urlDocument = `${req.hostname}/${document?.filename}`;
+            urlDocument = `${env.APP_URL}/${document?.filename}`;
             req.body.document = urlDocument;
         }
         else req.body.document = "";
 
 
-        let bookCreated = await bookService.create(book);
+        let bookCreated = await bookRepository.create(book);
 
         if (bookCreated === null) return HttpErrorHandler(res, new Error("Creation failed"), 401);
-        res.json(bookCreated);
+        res.json({data: bookCreated});
     } catch (err: any) {
         return HttpErrorHandler(res, err);
     }
@@ -133,10 +131,10 @@ export async function updateBook(req: Request, res: Response) {
         }
         else req.body.document = "";
 
-        let bookUpdated = await bookService.update(id, book);
+        let bookUpdated = await bookRepository.update(id, book);
 
         if (bookUpdated === null) return HttpErrorHandler(res, new Error("Updated failed"), 401);
-        res.json(bookUpdated);
+        res.json({data: bookUpdated});
     } catch (err: any) {
         return HttpErrorHandler(res, err);
     }
@@ -145,7 +143,7 @@ export async function updateBook(req: Request, res: Response) {
 export async function deleteBook(req: Request, res: Response) {
     try {
         let id: string = req.params.id;
-        let result = await bookService.delete(id);
+        let result = await bookRepository.delete(id);
 
         if (result === null) return HttpErrorHandler(res, new Error("Delete failed"), 401);
         res.json({ ok: true });

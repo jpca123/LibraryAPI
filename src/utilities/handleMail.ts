@@ -3,10 +3,10 @@ import { MailOptions } from "nodemailer/lib/json-transport";
 import { env } from "process";
 
 const transporter = nodemailer.createTransport({
-    service: env.EMAILSERVICE,
+    service: env.EMAIL_SERVICE,
     auth: {
-        user: env.EMAILUSER,
-        pass: env.EMAILPASSWORD
+        user: env.EMAIL_USER,
+        pass: env.EMAIL_PASSWORD
     },
 });
 
@@ -14,7 +14,7 @@ transporter.verify()
 .then(res =>console.log("SMTP gmail funcionando") )
 .catch(err => console.log("SMTP gmail no funciona", err))
 
-export async function sendMail(options: MailOptions, cb?: Function){
+export default async function sendMail(options: MailOptions, cb?: Function){
     try {
         let result = await transporter.sendMail(options);
         if(cb) return cb(null, result)

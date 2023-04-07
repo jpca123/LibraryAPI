@@ -1,7 +1,7 @@
 import Author from "../models/Author";
 import IAuthor from "../interfaces/Author";
 
-export default class AuthorService{
+export default class AuthorRepository{
 
     async create(author: IAuthor){
         let authorCreated = await Author.create(author);

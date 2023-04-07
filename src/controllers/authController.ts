@@ -1,17 +1,21 @@
 import { Request, Response } from "express";
 import ReqUserExt from "../interfaces/ReqUserExt";
-import AuthService from "../services/authService";
-import SecurityService from "../services/securityService";
-import UserService from "../services/userService";
+import AuthRepository from "../repositories/authRepository";
+import SecurityRepository from "../repositories/securityRepository";
+import UserRepository from "../repositories/userRepository";
 import HttpErrorHandler from "../utilities/httpErrorHandler";
+import { env } from "process";
+import User from "../interfaces/user";
+import MailOptions from "../interfaces/MailOptions";
+import sendMail from "../utilities/handleMail";
 
-const userService: UserService = new UserService();
-const authService: AuthService = new AuthService();
+const userRepository: UserRepository = new UserRepository();
+const authRepository: AuthRepository = new AuthRepository();
 
 export async function login(req: Request, res: Response) {
     try {
         let { userName, password } = req.body;
-        let logueo = await authService.login(userName, password);
+        let logueo = await authRepository.login(userName, password);
         res.json(logueo);
     } catch (err: any) {
         return HttpErrorHandler(res, err);
@@ -21,11 +25,21 @@ export async function login(req: Request, res: Response) {
 
 export async function register(req: Request, res: Response) {
     try {
-        let user = req.body;
-        let userCreated = await authService.register(user);
+        let user = req.body as User;
+        let userCreated: User = await authRepository.register(user) as User;
 
         if (userCreated === null) return HttpErrorHandler(res, new Error("Creation failed"), 401);
         res.json(userCreated);
+
+        let mailOptions: MailOptions = {
+            from: env.EMAIL_USER as string,
+            to: userCreated.email,
+            subject: "Create Account",
+            text: `Welcome ${userCreated.userName}, you are your account for manage yours favorites books`,
+            html: `Welcome <b>${userCreated.userName}</b>, you are your account for manage yours favorites books`
+        }
+
+        await sendMail(mailOptions);
     } catch (err: any) {
         return HttpErrorHandler(res, err);
     }
@@ -37,7 +51,7 @@ export async function logout(req: ReqUserExt, res: Response) {
         let userName: string = req.user?.userName || "";
         if (userName === "") return res.status(403).json({ error: "Error Session", message: "Session not found" });
 
-        let logout = await authService.logout(userName);
+        let logout = await authRepository.logout(userName);
         res.json(logout);
     } catch (err: any) {
         return HttpErrorHandler(res, err);
@@ -50,7 +64,7 @@ export async function validSession(req: Request, res: Response) {
         let token: string = req.body.token || "";
         if (token === "") return HttpErrorHandler(res, new Error("Unauthorized, token included"), 401);
 
-        let validSesion = await authService.validSession(token);
+        let validSesion = await authRepository.validSession(token);
         if(validSesion) return res.json({valid: true});
         return res.json({valid: false});
     } catch (err: any) {
@@ -61,7 +75,7 @@ export async function validSession(req: Request, res: Response) {
 export async function forgotPassword(req: Request, res: Response) {
     try {
         let {email} = req.body;
-        await authService.forgotPassword(email);
+        await authRepository.forgotPassword(email);
         return res.send({ok: true, message: "Mail send"});
     } catch (err: any) {
         return HttpErrorHandler(res, err);
@@ -72,7 +86,7 @@ export async function changePassword(req: Request, res: Response) {
     try {
         let {password} = req.body;
         let token: string = req.headers.token as string;
-        let passwordChanged = await authService.changePassword(token, password);
+        let passwordChanged = await authRepository.changePassword(token, password);
         if(!passwordChanged) return HttpErrorHandler(res, new Error("Can not change the password, token expired"), 401);
 
         return res.send({ok: true, message: "Password has been changed"});

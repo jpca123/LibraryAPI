@@ -1,12 +1,12 @@
 import { NextFunction, Request, Response } from "express";
 import HttpErrorHandler from "../utilities/httpErrorHandler";
-import SecurityService from "../services/securityService";
-import UserService from "../services/userService";
+import SecurityRepository from "../repositories/securityRepository";
+import UserRepository from "../repositories/userRepository";
 import ReqUserExt from "../interfaces/ReqUserExt";
 import Session from "../models/Session";
 
-const securityService: SecurityService = new SecurityService();
-const userService: UserService = new UserService();
+const securityRepository: SecurityRepository = new SecurityRepository();
+const userRepository: UserRepository = new UserRepository();
 
 
 export async function validateSesion(req: ReqUserExt, res: Response, next: NextFunction) {
@@ -19,7 +19,7 @@ export async function validateSesion(req: ReqUserExt, res: Response, next: NextF
     let session = await Session.findOne({token});
 
     if(!session) return HttpErrorHandler(res, new Error("Unauthorized, token not is valid"), 401);
-    let datos = await securityService.validToken(token);
+    let datos = await securityRepository.validToken(token);
     if (!datos) {
         if (session) session.remove();
         return HttpErrorHandler(res, new Error("Unauthorized, token not is valid"), 401);
@@ -27,7 +27,7 @@ export async function validateSesion(req: ReqUserExt, res: Response, next: NextF
 
     let data: string = JSON.parse(JSON.stringify(datos)).userName;
 
-    let user = await userService.getByUserName(data);
+    let user = await userRepository.getByUserName(data);
 
     // validadndo informacion
     if(!user) return HttpErrorHandler(res, new Error("Unauthorized, user not found"), 401);

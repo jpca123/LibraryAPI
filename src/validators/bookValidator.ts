@@ -6,13 +6,14 @@ import HttpErrorHandler from "../utilities/httpErrorHandler";
 const validateResult = (req: Request, res: Response, next: NextFunction) => {
     let errors = validationResult(req);
     if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
+        let list = errors.array().map(el => `${el.param} -- ${el.location} -- ${el.value} -- ${el.msg || "N/A"}`);
+        return res.status(400).json({ errors: list, message: "rejected from middleware" });
     }
     return next();
 }
 
 export const validateBook = [
-    check("title", "")
+    check("title")
         .exists()
         .withMessage("The title is required")
         .isLength({ min: 3, max: 50 })

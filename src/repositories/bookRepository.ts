@@ -1,16 +1,16 @@
 import Book from "../models/Book";
 import IBook from "../interfaces/book";
-import AuthorService from "./authorService";
+import AuthorRepository from "./authorRepository";
 
-export default class BookService{
+export default class BookRepository{
 
-    private authorService: AuthorService;
+    private authorRepository: AuthorRepository;
     constructor(){
-        this.authorService = new AuthorService();
+        this.authorRepository = new AuthorRepository();
     }
 
     async create(book: IBook){
-        let author = await this.authorService.getById(book.authorId);
+        let author = await this.authorRepository.getById(book.authorId);
         if(author === null) return null;
 
         let bookCreated = await Book.create(book);
@@ -62,7 +62,7 @@ export default class BookService{
     }
 
     async update(id: string, book: IBook){
-        let author = await this.authorService.getById(book.authorId);
+        let author = await this.authorRepository.getById(book.authorId);
         if(author === null) return null;
         
         let bookSearch = await this.getById(id);

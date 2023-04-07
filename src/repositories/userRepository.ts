@@ -1,17 +1,17 @@
 import User from "../models/User";
 import IUser from "../interfaces/user";
 import UserBook from "../models/User-Book";
-import BookService from "./bookService";
-import SecurityService from "./securityService";
+import BookRepository from "./bookRepository";
+import SecurityRepository from "./securityRepository";
 
-export default class UserService{
+export default class UserRepository{
 
-    private bookService: BookService;
-    private securityService: SecurityService;
+    private bookRepository: BookRepository;
+    private securityRepository: SecurityRepository;
 
     constructor(){
-        this.bookService = new BookService();
-        this.securityService = new SecurityService();
+        this.bookRepository = new BookRepository();
+        this.securityRepository = new SecurityRepository();
     }
 
     async getAll(page?: number, limit?: number){
@@ -62,7 +62,7 @@ export default class UserService{
         let user = await User.findById(userId);
         if(user === null) return null;
 
-        let book = await this.bookService.getById(bookId);
+        let book = await this.bookRepository.getById(bookId);
         if(book === null) return null;
 
         // validando si el libro ya ha sido añadido
