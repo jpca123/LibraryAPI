@@ -1,5 +1,5 @@
 import Author from "../models/Author";
-import IAuthor from "../interfaces/Author";
+import IAuthor from "../interfaces/IAuthor";
 
 export default class AuthorRepository{
 

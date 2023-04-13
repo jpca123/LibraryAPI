@@ -1,4 +1,4 @@
-export default interface MailOptions{
+export default interface IMailOptions{
     from: string,
     to: string,
     subject: string,

@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import HttpErrorHandler from "../utilities/httpErrorHandler";
 import SecurityRepository from "../repositories/securityRepository";
 import UserRepository from "../repositories/userRepository";
-import ReqUserExt from "../interfaces/ReqUserExt";
+import ReqUserExt from "../interfaces/IReqUserExt";
 import Session from "../models/Session";
 
 const securityRepository: SecurityRepository = new SecurityRepository();

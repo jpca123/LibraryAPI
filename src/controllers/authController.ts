@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
-import ReqUserExt from "../interfaces/ReqUserExt";
+import ReqUserExt from "../interfaces/IReqUserExt";
 import AuthRepository from "../repositories/authRepository";
 import SecurityRepository from "../repositories/securityRepository";
 import UserRepository from "../repositories/userRepository";
 import HttpErrorHandler from "../utilities/httpErrorHandler";
 import { env } from "process";
-import User from "../interfaces/user";
-import MailOptions from "../interfaces/MailOptions";
+import User from "../interfaces/IUser";
+import MailOptions from "../interfaces/IMailOptions";
 import sendMail from "../utilities/handleMail";
 
 const userRepository: UserRepository = new UserRepository();

@@ -1,4 +1,4 @@
-export default interface UserBook{
+export default interface IUserBook{
     userId: string,
     bookId: string,
 }

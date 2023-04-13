@@ -1,4 +1,4 @@
-export default interface Author{
+export default interface IAuthor{
     name: string,
     lastName?: string,
     country: string,

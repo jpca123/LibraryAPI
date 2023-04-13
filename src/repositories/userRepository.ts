@@ -1,5 +1,5 @@
 import User from "../models/User";
-import IUser from "../interfaces/user";
+import IUser from "../interfaces/IUser";
 import UserBook from "../models/User-Book";
 import BookRepository from "./bookRepository";
 import SecurityRepository from "./securityRepository";
@@ -7,11 +7,9 @@ import SecurityRepository from "./securityRepository";
 export default class UserRepository{
 
     private bookRepository: BookRepository;
-    private securityRepository: SecurityRepository;
 
     constructor(){
         this.bookRepository = new BookRepository();
-        this.securityRepository = new SecurityRepository();
     }
 
     async getAll(page?: number, limit?: number){

@@ -1,5 +1,5 @@
 import Category from "../models/Category";
-import ICategory from "../interfaces/Category";
+import ICategory from "../interfaces/ICategory";
 
 export default class CategoryRepository{
 

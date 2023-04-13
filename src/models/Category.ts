@@ -1,7 +1,7 @@
 import { Schema, model } from "mongoose";
-import Category from "../interfaces/Category";
+import ICategory from "../interfaces/ICategory";
 
-const CategorySchema = new Schema<Category>({
+const CategorySchema = new Schema<ICategory>({
     category: {
         type: String,
         required: true
@@ -11,4 +11,4 @@ const CategorySchema = new Schema<Category>({
     timestamps: true
 })
 
-export default model("Category", CategorySchema);
+export default model<ICategory>("Category", CategorySchema);

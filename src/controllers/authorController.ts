@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import Author from "../interfaces/Author";
+import Author from "../interfaces/IAuthor";
 import AuthorRepository from "../repositories/authorRepository";
 import HttpErrorHandler from "../utilities/httpErrorHandler";
 

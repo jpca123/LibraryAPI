@@ -1,5 +1,5 @@
 import Book from "../models/Book";
-import IBook from "../interfaces/book";
+import IBook from "../interfaces/IBook";
 import AuthorRepository from "./authorRepository";
 
 export default class BookRepository{

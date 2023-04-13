@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import ReqUserExt from "../interfaces/ReqUserExt";
+import ReqUserExt from "../interfaces/IReqUserExt";
 import SecurityRepository from "../repositories/securityRepository";
 import UserRepository from "../repositories/userRepository";
 import HttpErrorHandler from "../utilities/httpErrorHandler";

@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import Category from "../interfaces/Category";
+import Category from "../interfaces/ICategory";
 import CategoryRepository from "../repositories/categoryRepository";
 import HttpErrorHandler from "../utilities/httpErrorHandler";
 

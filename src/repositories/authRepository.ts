@@ -1,11 +1,11 @@
 import User from "../models/User";
-import IUser from "../interfaces/user";
+import IUser from "../interfaces/IUser";
 import SecurityRepository from "./securityRepository";
 import UserRepository from "./userRepository";
 import Session from "../models/Session";
 import ChangePassword from "../models/ChangePassword";
 import { env } from "process";
-import { MailOptions } from "nodemailer/lib/json-transport";
+import IMailOptions from "../interfaces/IMailOptions"
 import sendMail from "../utilities/handleMail";
 
 export default class AuthRepository {
@@ -31,8 +31,8 @@ export default class AuthRepository {
 
             let createSession = await Session.create({ userName: user.userName, token: tokenEncrypted });
             if (createSession) {
-                let infoMail: MailOptions = {
-                    from: env.EMAILUSER,
+                let infoMail: IMailOptions = {
+                    from: env.EMAILUSER!,
                     to: user.email,
                     subject: "Sesion started",
                     text: `${user.userName}, you are started a session in your account, if are not you plis change your password now`,
@@ -99,8 +99,8 @@ export default class AuthRepository {
             return false;
         }
 
-        let infoMail: MailOptions = {
-            from: env.EMAILUSER,
+        let infoMail: IMailOptions = {
+            from: env.EMAILUSER!,
             to: user.email,
             subject: "Change Password",
             text: `${userName}, for change the password of your account click here`,

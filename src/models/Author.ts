@@ -1,7 +1,7 @@
 import { model, Schema } from "mongoose";
-import Author from "../interfaces/Author";
+import IAuthor from "../interfaces/IAuthor";
 
-const AuthorSchema = new Schema<Author>({
+const AuthorSchema = new Schema<IAuthor>({
     name: {
         type: String,
         required: true
@@ -23,4 +23,4 @@ const AuthorSchema = new Schema<Author>({
     timestamps: true
 },)
 
-export default model("Author", AuthorSchema);
+export default model<IAuthor>("Author", AuthorSchema);

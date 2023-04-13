@@ -1,7 +1,7 @@
 import { Schema, model } from "mongoose";
-import Session from "../interfaces/Session";
+import ISession from "../interfaces/ISession";
 
-const UserBookSchema = new Schema<Session>({
+const UserBookSchema = new Schema<ISession>({
     userName: {
         type: String,
         required: true,
@@ -17,4 +17,4 @@ const UserBookSchema = new Schema<Session>({
     timestamps: true
 })
 
-export default model("Session", UserBookSchema);
+export default model<ISession>("Session", UserBookSchema);

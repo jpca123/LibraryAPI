@@ -1,7 +1,7 @@
 import { Schema, model } from "mongoose";
-import Session from "../interfaces/Session";
+import ISession from "../interfaces/ISession";
 
-const ChangePasswordSchema = new Schema<Session>({
+const ChangePasswordSchema = new Schema<ISession>({
     userName: {
         type: String,
         required: true,
@@ -17,4 +17,4 @@ const ChangePasswordSchema = new Schema<Session>({
     timestamps: true
 })
 
-export default model("ChangePassword", ChangePasswordSchema);
+export default model<ISession>("ChangePassword", ChangePasswordSchema);

@@ -1,4 +1,4 @@
-export default interface Book{
+export default interface IBook{
     title: string,
     poster?: string,
     description?: string,

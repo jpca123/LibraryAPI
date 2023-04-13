@@ -1,7 +1,7 @@
 import { Schema, model } from "mongoose";
-import UserBook from "../interfaces/User-Book";
+import IUserBook from "../interfaces/IUser-Book";
 
-const UserBookSchema = new Schema<UserBook>({
+const UserBookSchema = new Schema<IUserBook>({
     userId: {
         type: String,
         required: true
@@ -15,4 +15,4 @@ const UserBookSchema = new Schema<UserBook>({
     timestamps: true
 })
 
-export default model("UserBook", UserBookSchema);
+export default model<IUserBook>("UserBook", UserBookSchema);

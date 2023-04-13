@@ -1,4 +1,4 @@
-export default interface Session{
+export default interface ISession{
     userName: string,
     token: string,
 }
