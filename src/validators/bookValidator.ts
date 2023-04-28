@@ -20,8 +20,6 @@ export const validateBook = [
         .withMessage("The descripcion should has a 200 characters maxim"),
 
     check("pages")
-        .exists()
-        .withMessage("Pages is required")
         .isNumeric()
         .withMessage("Pages should be a number"),
 

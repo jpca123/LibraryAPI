@@ -5,7 +5,7 @@ export default class AuthorRepository{
 
     async create(author: IAuthor){
         let authorCreated = await Author.create(author);
-        if (authorCreated) return authorCreated;
+        if (authorCreated) return {data: authorCreated};
         return null;
     }
 
@@ -17,31 +17,37 @@ export default class AuthorRepository{
         .skip((page - 1)* limit)
         .limit(limit)
         .select(["-createAt", "-updateAt"]);
-        if (results) return results;
+
+        let paginator: any = {page, limit, cuantity: null};
+
+        let cuantity: number | undefined = await Author.countDocuments();
+        if(cuantity !== undefined) paginator.cuantity = cuantity;
+
+        if (results) return {data: results, paginator};
         return [];
     }
 
     async getById(id: string){
         let result = await Author.findById(id);
-        if(result) return result;
+        if(result) return {data: result};
         return null;
     }
 
     async update(id: string, author: IAuthor){
-        let authorSearch = await this.getById(id);
+        let authorSearch = await Author.findById(id);
         if (!authorSearch) return null;
 
         Object.assign(authorSearch, author);
         authorSearch.save();
 
-        return authorSearch;
+        return {data: authorSearch};
     }
 
     async delete(id: string){
-        let authorSearch = await this.getById(id);
+        let authorSearch = await Author.findById(id);
         if(authorSearch === null) return null;
 
         authorSearch.remove();
-        return true;
+        return {ok: true};
     }
 }

@@ -26,6 +26,6 @@ let uploadMiddelware = multer({
             return cb(null, false);
         }
     },
-    limits: { fieldSize: 10000000 }
+    limits: { fieldSize: 50*1024*1024 }
 });
 export default uploadMiddelware;

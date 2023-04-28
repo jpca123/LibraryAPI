@@ -83,8 +83,10 @@ export default class AuthRepository {
     }
 
     async forgotPassword(email: string) {
-        let user = await this.userRepository.getByEmail(email);
-        if (!user) return null;
+        let requestUser = await this.userRepository.getByEmail(email);
+        if (!requestUser) return null;
+
+        let user = requestUser.data;
 
         let userName = user.userName;
         let token = this.securityRepository.generateToken({ userName });
@@ -122,13 +124,14 @@ export default class AuthRepository {
         let validToken = await this.securityRepository.validToken(token);
         if (!validToken) {
             await sessionDB.remove();
-            return false
+            return false;
         };
 
 
-        let user = await this.userRepository.getByUserName(sessionDB.userName);
-        if (!user) return false;
+        let requestUser = await this.userRepository.getByUserName(sessionDB.userName);
+        if (!requestUser) return false;
 
+        let user = requestUser.data;
         user.password = this.securityRepository.encrypt(newPassword);
 
         await user.save();

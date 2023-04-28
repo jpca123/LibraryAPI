@@ -21,25 +21,30 @@ export default class UserRepository{
         .limit(limit)
         .select(["-password", "-createAt", "-updateAt"]);
 
-        if (results) return {data: results};
-        return {data: []};
+        let paginator: any = {page, limit, cuantity: null};
+
+        let cuantity: number | undefined = await User.countDocuments();
+        if(cuantity !== undefined) paginator.cuantity = cuantity;
+
+        if (results) return {data: results, paginator};
+        return [];
     }
 
     async getById(id: string){
         let result = await User.findById(id);
-        if(result) return result;
+        if(result) return {data: result};
         return null;
     }
 
     async getByEmail(email: string){
         let result = await User.findOne({email});
-        if(result) return result;
+        if(result) return {data: result};
         return null;
     }
 
     async getByUserName(username: string){
         let result = await User.findOne({userName: username});
-        if (result) return result;
+        if (result) return {data: result};
         return null;
     }
 
@@ -73,7 +78,7 @@ export default class UserRepository{
             date: new Date()
         });
 
-        if (relation) return relation;
+        if (relation) return {data: relation};
         return null;
     }
 
@@ -84,7 +89,7 @@ export default class UserRepository{
         let deleted = await UserBook.findOne({userId, bookId});
         if(deleted) {
             await deleted.remove();
-            return true;
+            return {data: true};
         } 
         return null;
     }
@@ -97,7 +102,7 @@ export default class UserRepository{
         Object.assign(userSearch, user);
         userSearch.save();
 
-        return userSearch;
+        return {data: userSearch};
     }
 
     async delete(id: string){
@@ -105,7 +110,7 @@ export default class UserRepository{
         if(!userSearch) return null;
 
         userSearch.remove();
-        return true;
+        return {data: true};
     }
 
 }

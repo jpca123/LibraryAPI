@@ -5,8 +5,7 @@ import { validateSesion } from "../middelwares/authentication";
 const router = Router();
 
 // routes
-router.get("/", getAllUsers);
-// router.get("/", validateSesion, getAllUsers);
+router.get("/", validateSesion, getAllUsers);
 router.get("/books", validateSesion, getBooks);
 router.get("/:id", validateSesion, getUser);
 router.post("/books", validateSesion, setBook);

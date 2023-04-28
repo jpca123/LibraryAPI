@@ -27,16 +27,17 @@ export async function validateSesion(req: ReqUserExt, res: Response, next: NextF
 
     let data: string = JSON.parse(JSON.stringify(datos)).userName;
 
-    let user = await userRepository.getByUserName(data);
+    let userObject = await userRepository.getByUserName(data);
 
     // validadndo informacion
-    if(!user) return HttpErrorHandler(res, new Error("Unauthorized, user not found"), 401);
+    if(!userObject) return HttpErrorHandler(res, new Error("Unauthorized, user not found"), 401);
+    let user: any = userObject.data;
 
     // manejo de usuario
     user.set("password", undefined, {strict: false});
     user.set("createdAt", undefined, {strict: false});
     user.set("updatedAt", undefined, {strict: false});
     req.user = user;
-    console.log("Req from user: ", req.user.userName);
+    console.log("Req from user: ", req.user?.userName);
     next();
 }

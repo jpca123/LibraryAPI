@@ -18,7 +18,7 @@ export async function getAllUsers(req: ReqUserExt, res: Response) {
         if(req.query.limit) limit = parseInt(req.query.limit as string);
         else limit = 20;
         let result = await userRepository.getAll(page, limit);
-        res.json({data: result});
+        res.json(result);
     } catch (err: any) {
         return HttpErrorHandler(res, err);
     }
@@ -29,7 +29,7 @@ export async function getUser(req: Request, res: Response) {
         let id: string = req.body.id;
         let user = await userRepository.getById(id);
         if (user === null) return HttpErrorHandler(res, new Error("User not found"), 401);
-        return res.json({data: user});
+        return res.json(user);
     } catch (err: any) {
         return HttpErrorHandler(res, err);
     }
@@ -42,7 +42,7 @@ export async function getBooks(req: ReqUserExt, res: Response) {
         else id = req.user._id;
 
         let books = await userRepository.getBooks(id);
-        return res.json({data: books});
+        return res.json(books);
     } catch (err: any) {
         return HttpErrorHandler(res, err);
     }
@@ -58,7 +58,7 @@ export async function setBook(req: ReqUserExt, res: Response) {
         console.log(req.body)
         let bookVerify = await userRepository.setBook(idUser, bookId);
         if (bookVerify === null) return HttpErrorHandler(res, new Error("Can not add the book"), 403);
-        res.json({data: bookVerify});
+        res.json(bookVerify);
     } catch (err: any) {
         return HttpErrorHandler(res, err);
     }
@@ -72,7 +72,7 @@ export async function updateUser(req: Request, res: Response) {
         let userUpdated = await userRepository.update(id, user);
 
         if (userUpdated === null) return HttpErrorHandler(res, new Error("Updated failed"), 401);
-        res.json({data: userUpdated});
+        res.json(userUpdated);
     } catch (err: any) {
         return HttpErrorHandler(res, err);
     }
@@ -100,7 +100,7 @@ export async function deleteUserBook(req: ReqUserExt, res: Response) {
         let result = await userRepository.deleteUserBook(idUser, bookId);
 
         if (result === null) return HttpErrorHandler(res, new Error("Delete of book failed"), 401);
-        res.json({ok: true});
+        res.json(result);
     } catch (err: any) {
         return HttpErrorHandler(res, err);
     }

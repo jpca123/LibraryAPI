@@ -17,7 +17,7 @@ export async function getAllBooks(req: Request, res: Response) {
         else limit = 20;
 
         let result = await bookRepository.getAll(page, limit);
-        res.json({data: result});
+        res.json(result);
     } catch (err: any) {
         return HttpErrorHandler(res, err);
     }
@@ -28,7 +28,7 @@ export async function getBook(req: Request, res: Response) {
         let id: string = req.params.id;
         let result = await bookRepository.getById(id);
         if (result === null) return res.send("Book not found");
-        res.json({data: result});
+        res.json(result);
     } catch (err: any) {
         return HttpErrorHandler(res, err);
     }
@@ -38,6 +38,16 @@ export async function getBookByAuthor(req: Request, res: Response) {
     try {
         let id: string = req.params.id;
         let result = await bookRepository.getByAuthor(id);
+        res.json(result);
+    } catch (err: any) {
+        return HttpErrorHandler(res, err);
+    }
+}
+
+export async function getBookByTitle(req: Request, res: Response) {
+    try {
+        let title: string = req.params.title;
+        let result = await bookRepository.getByTitle(title);
         res.json(result);
     } catch (err: any) {
         return HttpErrorHandler(res, err);
@@ -56,7 +66,7 @@ export async function getBookByCategory(req: Request, res: Response) {
         else limit = 20;
 
         let result = await bookRepository.getByCategory(id, page, limit);
-        res.json({data: result});
+        res.json(result);
     } catch (err: any) {
         return HttpErrorHandler(res, err);
     }
@@ -94,7 +104,7 @@ export async function createBook(req: Request, res: Response) {
         let bookCreated = await bookRepository.create(book);
 
         if (bookCreated === null) return HttpErrorHandler(res, new Error("Creation failed"), 401);
-        res.json({data: bookCreated});
+        res.json(bookCreated);
     } catch (err: any) {
         return HttpErrorHandler(res, err);
     }
@@ -134,7 +144,7 @@ export async function updateBook(req: Request, res: Response) {
         let bookUpdated = await bookRepository.update(id, book);
 
         if (bookUpdated === null) return HttpErrorHandler(res, new Error("Updated failed"), 401);
-        res.json({data: bookUpdated});
+        res.json(bookUpdated);
     } catch (err: any) {
         return HttpErrorHandler(res, err);
     }
@@ -146,7 +156,7 @@ export async function deleteBook(req: Request, res: Response) {
         let result = await bookRepository.delete(id);
 
         if (result === null) return HttpErrorHandler(res, new Error("Delete failed"), 401);
-        res.json({ ok: true });
+        res.json(result);
     } catch (err: any) {
         return HttpErrorHandler(res, err);
     }

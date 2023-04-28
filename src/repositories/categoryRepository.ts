@@ -5,7 +5,7 @@ export default class CategoryRepository{
 
     async create(category: ICategory){
         let categoryCreated = await Category.create(category);
-        if (categoryCreated) return categoryCreated;
+        if (categoryCreated) return {data: categoryCreated};
         return null;
     }
 
@@ -16,33 +16,40 @@ export default class CategoryRepository{
         let results = await Category.find()
         .skip((page -1) * limit)
         .limit(limit)
-        .select(['-createAt', "-updateAt"]);
+        .select(['-createdAt', "-updatedAt"]);
 
-        if (results) return {data: results};
-        return {data: []};
+        let paginator: any = {page, skip: limit, cuantity: null};
+
+        let cuantity: number | undefined = await Category.countDocuments();
+        if(cuantity !== undefined) paginator.cuantity = cuantity;
+
+        if (results) return {data: results, paginator};
+        return [];
     }
 
     async getById(id: string){
-        let result = await Category.findById(id);
-        if(result) return result;
+        let result = await Category.findById(id)
+        .select(['-createdAt', "-updatedAt"]);
+
+        if(result) return {data: result};
         return null;
     }
 
     async update(id: string, category: ICategory){
-        let categorySearch = await this.getById(id);
+        let categorySearch = await Category.findById(id);
         if (!categorySearch) return null;
 
         Object.assign(categorySearch, category);
         categorySearch.save();
 
-        return categorySearch;
+        return {data: categorySearch};
     }
 
     async delete(id: string){
-        let categorySearch = await this.getById(id);
+        let categorySearch = await Category.findById(id);
         if(categorySearch === null) return null;
 
         categorySearch.remove();
-        return true;
+        return {ok: true};
     }
 }

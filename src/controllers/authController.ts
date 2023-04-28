@@ -66,7 +66,7 @@ export async function validSession(req: Request, res: Response) {
 
         let validSesion = await authRepository.validSession(token);
         if(validSesion) return res.json({valid: true});
-        return res.json({valid: false});
+        return res.json(validSesion);
     } catch (err: any) {
         return HttpErrorHandler(res, err);
     }

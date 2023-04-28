@@ -16,7 +16,7 @@ export async function getAllAuthors(req: Request, res: Response) {
         if(req.query.limit) limit = parseInt(req.query.limit as string);
         else limit = 20;
         let result = await authorRepository.getAll(page, limit);
-        res.json({data: result});
+        res.json(result);
     } catch (err: any) {
         return HttpErrorHandler(res, err);
     }
@@ -26,7 +26,7 @@ export async function getAuthor(req: Request, res: Response) {
         let id: string = req.params.id;
         let result = await authorRepository.getById(id);
         if(result === null) HttpErrorHandler(res, new Error("Author not found"), 404);
-        res.json({data: result});
+        res.json(result);
     } catch (err: any) {
         return HttpErrorHandler(res, err);
     }
@@ -37,7 +37,7 @@ export async function createAuthor(req: Request, res: Response) {
         let authorCreated = await authorRepository.create(author);
 
         if (authorCreated === null) return HttpErrorHandler(res, new Error("Creation falied"), 401);
-        res.json({data: authorCreated});
+        res.json(authorCreated);
     } catch (err: any) {
         return HttpErrorHandler(res, err);
     }
@@ -49,7 +49,7 @@ export async function updateAuthor(req: Request, res: Response) {
         let authorUpdated = await authorRepository.update(id, author);
 
         if (authorUpdated === null) return HttpErrorHandler(res, new Error("Updated failed"), 401);
-        res.json({data: authorUpdated});
+        res.json(authorUpdated);
     } catch (err: any) {
         return HttpErrorHandler(res, err);
     }
@@ -60,7 +60,7 @@ export async function deleteAuthor(req: Request, res: Response) {
         let result = await authorRepository.delete(id);
 
         if (result === null) return HttpErrorHandler(res, new Error("Delete failed"), 401);
-        res.json({ok: true});
+        res.json(result);
     } catch (err: any) {
         return HttpErrorHandler(res, err);
     }

@@ -4,7 +4,8 @@ import ICategory from "../interfaces/ICategory";
 const CategorySchema = new Schema<ICategory>({
     category: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
 }, {
     versionKey: false,

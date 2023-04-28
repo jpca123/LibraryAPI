@@ -17,7 +17,7 @@ export async function getAllCategories(req: Request, res: Response) {
         else limit = 20;
 
         let result = await categoryRepository.getAll(page, limit);
-        res.json({data: result});
+        res.json(result);
     } catch (err: any) {
         return HttpErrorHandler(res, err);
     }
@@ -27,7 +27,7 @@ export async function getCategory(req: Request, res: Response) {
         let id: string = req.params.id;
         let result = await categoryRepository.getById(id);
         if(result === null) return res.send("Category not found");
-        res.json({data: result});
+        res.json(result);
     } catch (err: any) {
         return HttpErrorHandler(res, err);
     }
@@ -38,7 +38,7 @@ export async function createCategory(req: Request, res: Response) {
         let categoryCreated = await categoryRepository.create(category);
 
         if (categoryCreated === null) return HttpErrorHandler(res, new Error("Creation falied"), 403);
-        res.json({data: categoryCreated});
+        res.json(categoryCreated);
     } catch (err: any) {
         return HttpErrorHandler(res, err);
     }
@@ -50,7 +50,7 @@ export async function updateCategory(req: Request, res: Response) {
         let categoryUpdated = await categoryRepository.update(id, category);
 
         if (categoryUpdated === null) return HttpErrorHandler(res, new Error("Updated failed"), 403);
-        res.json({data: categoryUpdated});
+        res.json(categoryUpdated);
     } catch (err: any) {
         return HttpErrorHandler(res, err);
     }
@@ -61,7 +61,7 @@ export async function deleteCategory(req: Request, res: Response) {
         let result = await categoryRepository.delete(id);
 
         if (result === null) return HttpErrorHandler(res, new Error("Delete failed"), 403);
-        return res.json({ok: true})
+        return res.json();
     } catch (err: any) {
         return HttpErrorHandler(res, err);
     }
