@@ -1,9 +1,10 @@
 import { Request } from "express";
 import multer from "multer";
+import path from "path";
 
 let storage = multer.diskStorage({
     destination(req: Request, file: Express.Multer.File, cb: any) {
-        cb(null, `${process.cwd()}/storage`);
+        cb(null, path.join(__dirname, "../storage"));
     },
     filename(req: Request, file: Express.Multer.File, cb: any) {
         let ext = file.originalname.split(".").pop();
@@ -18,7 +19,6 @@ let uploadMiddelware = multer({
         if(file.fieldname === "poster"){
             if(file.mimetype.includes("image/")) return cb(null, true);
             return cb(null, false);
-            
         }
 
         if(file.fieldname === "document"){

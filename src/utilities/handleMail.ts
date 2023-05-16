@@ -11,8 +11,8 @@ const transporter = nodemailer.createTransport({
 });
 
 transporter.verify()
-.then(res =>console.log("SMTP gmail funcionando") )
-.catch(err => console.log("SMTP gmail no funciona", err))
+.then(res =>console.log("SMTP email funcionando") )
+.catch(err => console.log("SMTP email no funciona", err))
 
 export default async function sendMail(options: MailOptions, cb?: Function){
     try {

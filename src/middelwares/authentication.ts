@@ -19,14 +19,13 @@ export async function validateSesion(req: ReqUserExt, res: Response, next: NextF
     let session = await Session.findOne({token});
 
     if(!session) return HttpErrorHandler(res, new Error("Unauthorized, token not is valid"), 401);
-    let datos = await securityRepository.validToken(token);
+    let datos: any = await securityRepository.validToken(token);
     if (!datos) {
         if (session) session.remove();
         return HttpErrorHandler(res, new Error("Unauthorized, token not is valid"), 401);
     }
 
-    let data: string = JSON.parse(JSON.stringify(datos)).userName;
-
+    let data: string = datos.userName as string;
     let userObject = await userRepository.getByUserName(data);
 
     // validadndo informacion

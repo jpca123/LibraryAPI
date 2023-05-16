@@ -17,6 +17,7 @@ export async function getAllCategories(req: Request, res: Response) {
         else limit = 20;
 
         let result = await categoryRepository.getAll(page, limit);
+        if(!result.ok) res.status(403);
         res.json(result);
     } catch (err: any) {
         return HttpErrorHandler(res, err);
@@ -26,7 +27,7 @@ export async function getCategory(req: Request, res: Response) {
     try {
         let id: string = req.params.id;
         let result = await categoryRepository.getById(id);
-        if(result === null) return res.send("Category not found");
+        if(!result.ok) res.status(403);
         res.json(result);
     } catch (err: any) {
         return HttpErrorHandler(res, err);
@@ -37,7 +38,7 @@ export async function createCategory(req: Request, res: Response) {
         let category = req.body;
         let categoryCreated = await categoryRepository.create(category);
 
-        if (categoryCreated === null) return HttpErrorHandler(res, new Error("Creation falied"), 403);
+        if (!categoryCreated.ok) res.status(403);
         res.json(categoryCreated);
     } catch (err: any) {
         return HttpErrorHandler(res, err);
@@ -49,7 +50,7 @@ export async function updateCategory(req: Request, res: Response) {
         let category = req.body;
         let categoryUpdated = await categoryRepository.update(id, category);
 
-        if (categoryUpdated === null) return HttpErrorHandler(res, new Error("Updated failed"), 403);
+        if (!categoryUpdated.ok) res.json(403);
         res.json(categoryUpdated);
     } catch (err: any) {
         return HttpErrorHandler(res, err);
@@ -60,7 +61,7 @@ export async function deleteCategory(req: Request, res: Response) {
         let id: string = req.params.id;
         let result = await categoryRepository.delete(id);
 
-        if (result === null) return HttpErrorHandler(res, new Error("Delete failed"), 403);
+        if (!result.ok) res.json(403);
         return res.json();
     } catch (err: any) {
         return HttpErrorHandler(res, err);

@@ -14,8 +14,7 @@ router.get("/titleBook:title", getBookByTitle);
 router.get("/author/:id", getBookByAuthor);
 router.get("/category/:id", getBookByCategory);
 router.get("/:id", getBook);
-router.post("/", uploadMiddelware.fields(filesUpload), validateBook, createBook);
-// router.post("/", validateSesion, uploadMiddelware.fields(filesUpload), validateBook, createBook);
+router.post("/", validateSesion, uploadMiddelware.fields(filesUpload), validateBook, createBook);
 router.put("/:id", validateSesion, uploadMiddelware.fields(filesUpload), validateBook, updateBook);
 router.delete("/:id", validateSesion, deleteBook);
 

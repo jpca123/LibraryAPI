@@ -2,20 +2,17 @@ import { Request, Response } from "express";
 import ReqUserExt from "../interfaces/IReqUserExt";
 import AuthRepository from "../repositories/authRepository";
 import SecurityRepository from "../repositories/securityRepository";
-import UserRepository from "../repositories/userRepository";
 import HttpErrorHandler from "../utilities/httpErrorHandler";
-import { env } from "process";
-import User from "../interfaces/IUser";
-import MailOptions from "../interfaces/IMailOptions";
-import sendMail from "../utilities/handleMail";
+import IUser from "../interfaces/IUser";
 
-const userRepository: UserRepository = new UserRepository();
 const authRepository: AuthRepository = new AuthRepository();
+const securityRepository: SecurityRepository = new SecurityRepository();
 
 export async function login(req: Request, res: Response) {
     try {
         let { userName, password } = req.body;
-        let logueo = await authRepository.login(userName, password);
+        let logueo = await authRepository.login(userName, password) as any;
+        if(!logueo.ok) res.status(401);
         res.json(logueo);
     } catch (err: any) {
         return HttpErrorHandler(res, err);
@@ -25,21 +22,11 @@ export async function login(req: Request, res: Response) {
 
 export async function register(req: Request, res: Response) {
     try {
-        let user = req.body as User;
-        let userCreated: User = await authRepository.register(user) as User;
+        let user = req.body as IUser;
+        let userCreated = await authRepository.register(user);
 
-        if (userCreated === null) return HttpErrorHandler(res, new Error("Creation failed"), 401);
+        if (!userCreated.ok) res.status(403);
         res.json(userCreated);
-
-        let mailOptions: MailOptions = {
-            from: env.EMAIL_USER as string,
-            to: userCreated.email,
-            subject: "Create Account",
-            text: `Welcome ${userCreated.userName}, you are your account for manage yours favorites books`,
-            html: `Welcome <b>${userCreated.userName}</b>, you are your account for manage yours favorites books`
-        }
-
-        await sendMail(mailOptions);
     } catch (err: any) {
         return HttpErrorHandler(res, err);
     }
@@ -47,11 +34,12 @@ export async function register(req: Request, res: Response) {
 
 export async function logout(req: ReqUserExt, res: Response) {
     try {
-        console.log(req.user)
-        let userName: string = req.user?.userName || "";
-        if (userName === "") return res.status(403).json({ error: "Error Session", message: "Session not found" });
+        let token: string = req.body.token;
+        let userNameRequest: any = await securityRepository.validToken(token);
+        let userName = userNameRequest.userName as string;
 
         let logout = await authRepository.logout(userName);
+        if(!logout.ok) res.status(403);
         res.json(logout);
     } catch (err: any) {
         return HttpErrorHandler(res, err);
@@ -65,7 +53,7 @@ export async function validSession(req: Request, res: Response) {
         if (token === "") return HttpErrorHandler(res, new Error("Unauthorized, token included"), 401);
 
         let validSesion = await authRepository.validSession(token);
-        if(validSesion) return res.json({valid: true});
+        if(!validSesion.ok) res.status(401);
         return res.json(validSesion);
     } catch (err: any) {
         return HttpErrorHandler(res, err);
@@ -87,10 +75,9 @@ export async function changePassword(req: Request, res: Response) {
         let {password} = req.body;
         let token: string = req.headers.token as string;
         let passwordChanged = await authRepository.changePassword(token, password);
-        if(!passwordChanged) return HttpErrorHandler(res, new Error("Can not change the password, token expired"), 401);
+        if(passwordChanged.ok) return res.send({ok: true, message: "Password has been changed"});
+        res.status(401).send(passwordChanged);
 
-        return res.send({ok: true, message: "Password has been changed"});
-        
     } catch (err: any) {
         return HttpErrorHandler(res, err);
     }

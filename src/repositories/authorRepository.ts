@@ -5,8 +5,8 @@ export default class AuthorRepository{
 
     async create(author: IAuthor){
         let authorCreated = await Author.create(author);
-        if (authorCreated) return {data: authorCreated};
-        return null;
+        if (authorCreated) return {ok: true, data: authorCreated};
+        return {ok: false, errors: [new Error("Creation failed")]};
     }
 
     async getAll(page?: number, limit?: number){
@@ -23,29 +23,29 @@ export default class AuthorRepository{
         let cuantity: number | undefined = await Author.countDocuments();
         if(cuantity !== undefined) paginator.cuantity = cuantity;
 
-        if (results) return {data: results, paginator};
-        return [];
+        if (results) return {ok: true, data: results, paginator};
+        return {ok: false, data: []};
     }
 
     async getById(id: string){
         let result = await Author.findById(id);
-        if(result) return {data: result};
-        return null;
+        if(result) return {ok: true, data: result};
+        return {ok: false, errors: [{error: "Not Found", message: "Author not found"}]};
     }
 
     async update(id: string, author: IAuthor){
         let authorSearch = await Author.findById(id);
-        if (!authorSearch) return null;
+        if (!authorSearch) return {ok: false, errors: [{Error: "Update Error", message: "Author not found"}]};
 
         Object.assign(authorSearch, author);
         authorSearch.save();
 
-        return {data: authorSearch};
+        return {ok: true, data: authorSearch};
     }
 
     async delete(id: string){
         let authorSearch = await Author.findById(id);
-        if(authorSearch === null) return null;
+        if(authorSearch === null) return {ok: false, errors: [{error: "Not Found", message: "Author not found"}]};
 
         authorSearch.remove();
         return {ok: true};

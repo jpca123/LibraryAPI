@@ -4,6 +4,8 @@ import { env, cwd } from "process";
 import router from "./routers";
 import {config} from "dotenv";
 import cors from "cors";
+import path from "path";
+
 
 if(env.NODE_ENV !== "production"){
     config();
@@ -17,7 +19,7 @@ const PORT = env.PORT || 3800;
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({extended: true}))
-app.use(express.static(`${cwd()}/storage`));
+app.use(express.static(path.join(__dirname, "/storage")));
 
 
 //routers
