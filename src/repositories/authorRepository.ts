@@ -1,5 +1,6 @@
 import Author from "../models/Author";
 import IAuthor from "../interfaces/IAuthor";
+import Book from "../models/Book";
 
 export default class AuthorRepository{
 
@@ -46,6 +47,10 @@ export default class AuthorRepository{
     async delete(id: string){
         let authorSearch = await Author.findById(id);
         if(authorSearch === null) return {ok: false, errors: [{error: "Not Found", message: "Author not found"}]};
+
+        let books = await Book.find({authorId: id});
+        console.log({books});
+        if(books.length > 0) return { ok: false, errors: [{error: "Restricted", message: "There are books with this author, cannot delete this author, first delete the books with this author"}]}
 
         authorSearch.remove();
         return {ok: true};

@@ -131,8 +131,7 @@ export async function updateBook(req: Request, res: Response) {
         // confguracion de la ruta del poster
         if (poster) {
             let urlPoster = null;
-            if (env.NODE_ENV !== "PRODUCTION") urlPoster = `${req.hostname}:${env.PORT || 3800}/${poster?.filename}`;
-            else urlPoster = `${req.hostname}/${poster?.filename}`;
+            urlPoster = `${env.APP_URL}/${poster?.filename}`;
             req.body.poster = urlPoster;
         }
         else req.body.poster = "";
@@ -140,8 +139,7 @@ export async function updateBook(req: Request, res: Response) {
         // confguracion de la ruta del file
         if (document) {
             let urlDocument = null;
-            if (env.NODE_ENV !== "PRODUCTION") urlDocument = `${req.hostname}:${env.PORT || 3800}/${document?.filename}`;
-            else urlDocument = `${req.hostname}/${document?.filename}`;
+            urlDocument = `${env.APP_URL}/${document?.filename}`;
             req.body.document = urlDocument;
         }
         else req.body.document = "";

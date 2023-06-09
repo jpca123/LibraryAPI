@@ -3,7 +3,7 @@ import IBook from "../interfaces/IBook";
 import AuthorRepository from "./authorRepository";
 import * as fs from "fs";
 import path from "path";
-import { env } from "process";
+import UserBook from "../models/User-Book";
 
 export default class BookRepository {
 
@@ -121,6 +121,8 @@ export default class BookRepository {
 
         if (bookSearch.poster) this.deleteFiles(bookSearch.poster.split("/").pop()!);
         if (bookSearch.document) this.deleteFiles(bookSearch.document.split("/").pop()!);
+        let favorites = await UserBook.find({bookId: id});
+        favorites.forEach(async (el: any) => await el.remove()); // delete fovorites registers
 
         bookSearch.remove();
         return { ok: true };

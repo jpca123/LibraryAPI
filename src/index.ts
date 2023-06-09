@@ -25,7 +25,7 @@ app.use(express.static(path.join(__dirname, "/storage")));
 //routers
 app.use(router);
 
-// db mongo connection
+// mongoDB connection
 
 mongoose.connect(env.MONGO_LOCAL_URI!)
 .then(()=> console.log("MongoDB run (Local)"))
@@ -33,9 +33,15 @@ mongoose.connect(env.MONGO_LOCAL_URI!)
     console.log("fallo la conexion a mongoDB");
     console.log(err.message);
 })
+
 // routes
 app.get("/", (req: Request, res: Response)=>{
-    res.send("<h1>Welcome to Library App, a <mark>Rest API</mark> for admin a simple library</h1>");
+    let data: any = {
+        name: "Library App",
+        description: "Project to manage a library with a Rest API",
+        version: 1
+    }
+    res.json(data);
 })
 
 

@@ -50,7 +50,7 @@ export async function updateCategory(req: Request, res: Response) {
         let category = req.body;
         let categoryUpdated = await categoryRepository.update(id, category);
 
-        if (!categoryUpdated.ok) res.json(403);
+        if (!categoryUpdated.ok) res.status(403);
         res.json(categoryUpdated);
     } catch (err: any) {
         return HttpErrorHandler(res, err);
@@ -61,8 +61,8 @@ export async function deleteCategory(req: Request, res: Response) {
         let id: string = req.params.id;
         let result = await categoryRepository.delete(id);
 
-        if (!result.ok) res.json(403);
-        return res.json();
+        if (!result.ok) res.status(403);
+        return res.json(result);
     } catch (err: any) {
         return HttpErrorHandler(res, err);
     }
