@@ -6,8 +6,8 @@ import Session from "../models/Session";
 import ChangePassword from "../models/ChangePassword";
 import { env } from "process";
 import IMailOptions from "../interfaces/IMailOptions"
-import sendMail from "../utilities/handleMail";
 import { MailOptions } from "nodemailer/lib/json-transport";
+import { sendMail } from "../config/smtpEmail";
 
 export default class AuthRepository {
 

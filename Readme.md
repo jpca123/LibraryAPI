@@ -17,7 +17,4 @@ En el funcionamiento de la aplicación el usuario debe proporcionar un email que
 # Informacion adicional
 En el proyecto adjunto el modelo entidad relación de la base de datos en el estandar **UML**.
 
-version de node: 16.13.0
-
-version de npm: 9.4.1
 
