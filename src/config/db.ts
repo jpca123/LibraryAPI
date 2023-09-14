@@ -1,14 +1,12 @@
-import mongoose, { Mongoose } from "mongoose";
+import mongoose, { Connection, Mongoose } from "mongoose";
 import { env } from "process";
 
-export async function connectDB(cb?: (err: Error | null, conn: Mongoose | null) => void){
-    try{
-        console.log('mongose url:', env.MONGO_LOCAL_URI!)
-        let connection = await mongoose.connect(env.MONGO_LOCAL_URI!);
-        if(cb) cb(null, connection);
-    }catch(err: any){
-        console.log(err.message);
-        if(cb) cb(err, null);
-
-    }
+export async function connectDB(): Promise<{error?: Error, connection?: Mongoose}>{
+	try{
+		let url = env.MONGO_LOCAL_URI!;
+		let connection = await mongoose.connect(url);
+		return {connection};
+	}catch(error: any){
+		return {error};
+	}
 }

@@ -27,10 +27,10 @@ export default class AuthRepository {
         let userPasswordDecrypted = this.securityRepository.decrypt(user.password);
 
         if (password === userPasswordDecrypted) {
-            let tokenEncrypted = this.securityRepository.generateToken({ userName: user.userName });
-            await Session.findOneAndRemove({ userName: user.userName });
+            let tokenEncrypted = this.securityRepository.generateToken({ userId: user._id });
+            await Session.findOneAndRemove({ userId: user._id });
 
-            let createSession = await Session.create({ userName: user.userName, token: tokenEncrypted });
+            let createSession = await Session.create({ userId: user._id, token: tokenEncrypted });
             if (createSession) {
                 let infoMail: IMailOptions = {
                     from: env.EMAILUSER!,
@@ -51,9 +51,9 @@ export default class AuthRepository {
 
     }
 
-    async logout(userName: string) {
-        let session = await Session.findOne({ userName });
-        if(session) await session.remove();
+    async logout(userId: string) {
+        let session = await Session.findOne({ _id:  userId});
+        if(session) await ChangePassword.deleteOne({_id: session._id});
         return { ok: true, data: { message: "Session closed correctly" } };
     }
 
@@ -130,19 +130,19 @@ export default class AuthRepository {
 
         let validToken = await this.securityRepository.validToken(token);
         if (!validToken) {
-            await sessionDB.remove();
+            await ChangePassword.deleteOne({userId: sessionDB._id});
             return { ok: false, errors: [{error: "Invalid Session", message: "Invalid Session"}] };
         };
 
 
-        let requestUser = await this.userRepository.getByUserName(sessionDB.userName);
+        let requestUser = await this.userRepository.getById(sessionDB.userId);
         if (!requestUser) return { ok: false, errors: [{error: "Not Found", message: "User not found"}] };
 
         let user = requestUser.data!;
         user.password = this.securityRepository.encrypt(newPassword);
 
         await user.save();
-        await sessionDB.remove();
+        await ChangePassword.deleteOne({_id: sessionDB._id});
         return { ok: true };
     }
 }

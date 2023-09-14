@@ -1,23 +1,17 @@
-import app, { runApp } from "./app";
 import { connectDB } from "./config/db";
-import { transporter,  verifySMTPConnection } from "./config/smtpEmail";
+import { transporter } from "./config/smtpEmail";
+import app from "./config/app";
 
-
-// Active the server
+// Server APP 
 const App = app;
-runApp();
 
-// Connect to DB
-connectDB((err, connection)=> {
-    if(err) return console.log("Error to connect DB: ", err.message);
-    console.log("Correct connection to DB",  connection);
-});
+// connect to Database
+connectDB()
+.then((connection)=> console.log("Correct conection to MongoDB"))
+.catch((err: any)=> console.error("Fail connect to MongoDB", err.message));
 
-// Connection to email SMTP
-const SMTPEmail = transporter;
-verifySMTPConnection((err, connection)=> {
-    if(err) return console.log("Error to connect SMTP email: ", err.message);
-    console.log("Correct connection to SMTP email");
-});
-
-
+// email SMTP
+const smtpEmail = transporter;
+smtpEmail.verify()
+.then(smtp => console.log("Correct connection to SMTP email"))
+.catch((err: any)=> console.error("Fail to connect to SMTP email", err.message));

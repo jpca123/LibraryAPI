@@ -66,11 +66,12 @@ export async function setBook(req: ReqUserExt, res: Response) {
     }
 }
 
-
-export async function updateUser(req: Request, res: Response) {
+export async function updateUser(req: ReqUserExt, res: Response) {
     try {
-        let id: string = req.params.id;
         let user = req.body;
+        let id: string = req.user?._id;
+
+        console.log("Updfate", {id})
         let userUpdated = await userRepository.update(id, user);
 
         if (!userUpdated.ok) res.status(403);
@@ -80,9 +81,9 @@ export async function updateUser(req: Request, res: Response) {
     }
 }
 
-export async function deleteUser(req: Request, res: Response) {
+export async function deleteUser(req: ReqUserExt, res: Response) {
     try {
-        let id: string = req.params.id;
+        let id: string = req.user?._id;
         let result = await userRepository.delete(id);
 
         if (!result.ok) res.status(403);

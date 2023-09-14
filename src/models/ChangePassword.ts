@@ -2,7 +2,7 @@ import { Schema, model } from "mongoose";
 import ISession from "../interfaces/ISession";
 
 const ChangePasswordSchema = new Schema<ISession>({
-    userName: {
+    userId: {
         type: String,
         required: true,
         unique: true

@@ -10,14 +10,6 @@ export const transporter = nodemailer.createTransport({
     },
 });
 
-export async function verifySMTPConnection(cb?: (err: Error | null, conn: Boolean | null) => void){
-    try {
-        let connection = await transporter.verify();
-        if(cb) cb(null, connection);
-    } catch (err: any) {
-        if(cb) cb(null, err);
-    }
-}
 
 export async function sendMail(options: MailOptions, cb?: Function){
     try {

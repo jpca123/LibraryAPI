@@ -54,7 +54,7 @@ export default class CategoryRepository {
         let books = await Book.find({categoryId: id});
         if(books.length > 0) return { ok: false, errors: [{error: "Restricted", message: "There are books with this category, cannot delete this category, first delete the books with this category"}]}
 
-        categorySearch.remove();
+        await Category.findOne({_id: categorySearch._id});
         return { ok: true };
     }
 }

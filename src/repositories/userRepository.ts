@@ -2,13 +2,19 @@ import User from "../models/User";
 import IUser from "../interfaces/IUser";
 import UserBook from "../models/User-Book";
 import BookRepository from "./bookRepository";
+import SecurityRepository from "./securityRepository";
+import { ObjectId } from "mongoose";
+import Session from "../models/Session";
+import ChangePassword from "../models/ChangePassword";
 
 export default class UserRepository{
 
     private bookRepository: BookRepository;
+    private securityservice: SecurityRepository;
 
     constructor(){
         this.bookRepository = new BookRepository();
+        this.securityservice = new SecurityRepository()
     }
 
     async getAll(page?: number, limit?: number){
@@ -18,7 +24,7 @@ export default class UserRepository{
         let results = await User.find()
         .skip((page - 1)* limit)
         .limit(limit)
-        .select(["-password", "-createAt", "-updateAt"]);
+        .select(["-password", "-createdAt", "-updatedAt"]);
 
         let paginator: any = {page, limit, cuantity: null};
 
@@ -26,25 +32,28 @@ export default class UserRepository{
         if(cuantity !== undefined) paginator.cuantity = cuantity;
 
         if (results) return {ok: true, data: results, paginator};
-        return {ok: false, data: []};
+        return {ok: true, data: [], paginator};
     }
 
     async getById(id: string){
-        let result = await User.findById(id);
+        let result = await User.findById(id)
+        .select(["-password", "-createAt", "-updateAt"]);
         if(result) return {ok: true, data: result};
-        return {ok: false, errors: [{error: "Not Found", message: "User not found"}] };
+        return {ok: true, errors: [{error: "Not Found", message: "User not found"}] };
 
     }
 
     async getByEmail(email: string){
-        let result = await User.findOne({email});
+        let result = await User.findOne({email})
+        .select(["-password", "-createAt", "-updateAt"]);
         if(result) return {ok: true, data: result};
         return {ok: false, errors: [{error: "Not Found", message: "User not found"}] };
 
     }
 
     async getByUserName(username: string){
-        let result = await User.findOne({userName: username});
+        let result = await User.findOne({userName: username})
+        .select(["-password", "-createAt", "-updateAt"]);
         if (result) return {ok: true, data: result};
         return {ok: false, errors: [{error: "Not Found", message: "User not found"}] };
     }
@@ -96,7 +105,7 @@ export default class UserRepository{
 
         let deleted = await UserBook.findOne({userId, bookId});
         if(deleted) {
-            await deleted.remove();
+            await User.deleteOne({_id: deleted._id});
             return {ok: true};
         } 
         return {ok: false, errors: [{error: "Not Found", message: "Book not found"}] };
@@ -104,20 +113,42 @@ export default class UserRepository{
 
 
     async update(id: string, user: IUser){
+        let userWithUserName = await User.findOne({userName: user.userName});
+        if(userWithUserName && userWithUserName._id.toString() === id)  return {ok: false, errors: [{error: "Username Error", message: "The username already"}] };
+
+        let userWithEmail = await User.findOne({email: user.email});
+        if(userWithEmail && userWithEmail._id.toString() !== id)  return {ok: false, errors: [{error: "Email Error", message: "The email already"}] };
+
         let userSearch = await User.findById(id);
         if (!userSearch) return {ok: false, errors: [{error: "Not Found", message: "User not found"}] };
 
-        Object.assign(userSearch, user);
-        userSearch.save();
+        userSearch.name = user.name;
+        userSearch.userName = user.userName;
+        userSearch.gender = user.gender;
+        userSearch.email = user.email;
+        userSearch.lastName = user.lastName;
+        await userSearch.save();
 
-        return {data: userSearch};
+        userSearch.set("_id", undefined);
+        userSearch.set("password", undefined);
+        userSearch.set("createdAt", undefined);
+        userSearch.set("updatedAt", undefined);
+
+        return {data: userSearch, ok: true};
     }
 
     async delete(id: string){
         let userSearch = await User.findById(id);
         if(!userSearch) return {ok: false, errors: [{error: "Not Found", message: "User not found"}] };
 
-        userSearch.remove();
+        let booksUser = await UserBook.find({userId: userSearch._id});
+
+        booksUser.forEach(async rel => await UserBook.findByIdAndRemove(rel._id))
+
+        await Session.findOneAndDelete({userId: id});
+        await ChangePassword.findOneAndDelete({userId: id});
+
+        await User.deleteOne({_id: userSearch._id});
         return {data: true};
     }
 

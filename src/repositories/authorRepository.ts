@@ -52,7 +52,7 @@ export default class AuthorRepository{
         console.log({books});
         if(books.length > 0) return { ok: false, errors: [{error: "Restricted", message: "There are books with this author, cannot delete this author, first delete the books with this author"}]}
 
-        authorSearch.remove();
+        await Author.deleteOne({_id: authorSearch._id});
         return {ok: true};
     }
 }

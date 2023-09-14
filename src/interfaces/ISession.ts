@@ -1,4 +1,4 @@
 export default interface ISession{
-    userName: string,
+    userId: string,
     token: string,
 }

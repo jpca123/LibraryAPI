@@ -124,7 +124,7 @@ export default class BookRepository {
         let favorites = await UserBook.find({bookId: id});
         favorites.forEach(async (el: any) => await el.remove()); // delete fovorites registers
 
-        bookSearch.remove();
+        await Book.deleteOne({_id: bookSearch._id});
         return { ok: true };
     }
 

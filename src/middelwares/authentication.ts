@@ -21,22 +21,23 @@ export async function validateSesion(req: ReqUserExt, res: Response, next: NextF
     if(!session) return HttpErrorHandler(res, new Error("Unauthorized, token not is valid"), 401);
     let datos: any = await securityRepository.validToken(token);
     if (!datos) {
-        if (session) session.remove();
+        if (session) Session.deleteOne({userid: session.userId});
         return HttpErrorHandler(res, new Error("Unauthorized, token not is valid"), 401);
     }
 
-    let data: string = datos.userName as string;
-    let userObject = await userRepository.getByUserName(data);
+    let data: string = datos.userId as string;
+    let userObject = await userRepository.getById(data);
 
     // validadndo informacion
-    if(!userObject) return HttpErrorHandler(res, new Error("Unauthorized, user not found"), 401);
+    if(!userObject.ok) return HttpErrorHandler(res, new Error("Unauthorized, user not found"), 401);
     let user: any = userObject.data;
+
+    console.log({userObject})
 
     // manejo de usuario
     user.set("password", undefined, {strict: false});
     user.set("createdAt", undefined, {strict: false});
     user.set("updatedAt", undefined, {strict: false});
     req.user = user;
-    console.log("Req from user: ", req.user?.userName);
     next();
 }

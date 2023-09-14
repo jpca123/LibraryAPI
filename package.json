@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "start": "node dist/index.js",
-    "dev": "nodemon src/index.ts --exec ts-node ./src/index.ts",
+    "dev": "ts-node-dev ./src/index.ts",
     "build": "tsc"
   },
   "keywords": [],
@@ -20,6 +20,7 @@
     "@types/nodemailer": "^6.4.7",
     "nodemon": "^3.0.1",
     "ts-node": "^10.9.1",
+    "ts-node-dev": "^2.0.0",
     "typescript": "^4.9.4"
   },
   "dependencies": {
@@ -29,7 +30,7 @@
     "express": "^4.18.2",
     "express-validator": "^6.14.3",
     "jsonwebtoken": "^8.5.1",
-    "mongoose": "^6.11.4",
+    "mongoose": "^7.4.1",
     "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.9.1"
   }

@@ -9,8 +9,8 @@ router.get("/", validateSesion, getAllUsers);
 router.get("/books", validateSesion, getBooks);
 router.get("/:id", validateSesion, getUser);
 router.post("/books", validateSesion, setBook);
-router.put("/:id", validateSesion, updateUser);
+router.put("/", validateSesion, updateUser);
 router.delete("/books/:bookId", validateSesion, deleteUserBook);
-router.delete("/:id", validateSesion, deleteUser);
+router.delete("/", validateSesion, deleteUser);
 
 export {router};
