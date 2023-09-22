@@ -22,13 +22,12 @@ export default class AuthRepository {
     async login(username: string, password: string) {
         if (!username || !password) return { ok: false, errors: [{error: "Invalid Credentials", message: "Username or password are incorrect"}] };
         let user = await User.findOne({ userName: username });
-        if (user === null) return { ok: false, errors: [{error: "Not Found", message: "User not found"}] };
-
+        if (user === null) return { ok: false, errors: [{error: "Invalid Credentials", message: "Username or password are incorrect"}] };
         let userPasswordDecrypted = this.securityRepository.decrypt(user.password);
 
         if (password === userPasswordDecrypted) {
-            let tokenEncrypted = this.securityRepository.generateToken({ userId: user._id });
             await Session.findOneAndRemove({ userId: user._id });
+            let tokenEncrypted = this.securityRepository.generateToken({ userId: user._id });
 
             let createSession = await Session.create({ userId: user._id, token: tokenEncrypted });
             if (createSession) {
@@ -40,12 +39,11 @@ export default class AuthRepository {
                     html: `<p>${user.userName}, you are started a session in your account, if are not you plis change your password now`
                 };
 
-                await sendMail(infoMail, console.log);
+                sendMail(infoMail, console.log);
                 return { ok: true, token: tokenEncrypted };
             }
 
             return { ok: false, errors: [{error: "Invalid Credentials", message: "User or password are incorrect"}] };
-
         }
         return { ok: false, errors: [{error: "Invalid Credentials", message: "User or password are incorrect"}] };
 
@@ -61,6 +59,10 @@ export default class AuthRepository {
         let usernameValidation = await this.userRepository.getByUserName(user.userName);
         if (usernameValidation.ok) return { ok: false, errors: [{error: "Validation Error", message: "The username already exists"}] };
 
+        let userEmail = await this.userRepository.getByEmail(user.email);
+        if(userEmail.ok)  return {ok: false, errors: [{error: "Email Error", message: "The email already exists"}] };
+
+
         user.password = this.securityRepository.encrypt(user.password);
         let userCreated = await User.create(user);
         
@@ -73,7 +75,7 @@ export default class AuthRepository {
                 text: `Welcome ${userData.userName}, you are your account for manage yours favorites books`,
                 html: `Welcome <b>${userData.userName}</b>, you are your account for manage yours favorites books`
             }
-            await sendMail(mailOptions);
+            sendMail(mailOptions);
             return { ok: true, data: userCreated };
         } 
         return { ok: false, errors: [{error: "Create Error", message: "Creation failed"}] };

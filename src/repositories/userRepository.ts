@@ -114,10 +114,10 @@ export default class UserRepository{
 
     async update(id: string, user: IUser){
         let userWithUserName = await User.findOne({userName: user.userName});
-        if(userWithUserName && userWithUserName._id.toString() === id)  return {ok: false, errors: [{error: "Username Error", message: "The username already"}] };
+        if(userWithUserName && userWithUserName._id.toString() === id)  return {ok: false, errors: [{error: "Username Error", message: "The username already exists"}] };
 
         let userWithEmail = await User.findOne({email: user.email});
-        if(userWithEmail && userWithEmail._id.toString() !== id)  return {ok: false, errors: [{error: "Email Error", message: "The email already"}] };
+        if(userWithEmail && userWithEmail._id.toString() === id)  return {ok: false, errors: [{error: "Email Error", message: "The email already exists"}] };
 
         let userSearch = await User.findById(id);
         if (!userSearch) return {ok: false, errors: [{error: "Not Found", message: "User not found"}] };
@@ -149,7 +149,7 @@ export default class UserRepository{
         await ChangePassword.findOneAndDelete({userId: id});
 
         await User.deleteOne({_id: userSearch._id});
-        return {data: true};
+        return {ok: true};
     }
 
 }

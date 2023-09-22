@@ -3,7 +3,6 @@ import ReqUserExt from "../interfaces/IReqUserExt";
 import SecurityRepository from "../repositories/securityRepository";
 import UserRepository from "../repositories/userRepository";
 import HttpErrorHandler from "../utilities/httpErrorHandler";
-
 const securityRepository: SecurityRepository = new SecurityRepository()
 const userRepository: UserRepository = new UserRepository();
 
@@ -25,9 +24,9 @@ export async function getAllUsers(req: ReqUserExt, res: Response) {
     }
 }
 
-export async function getUser(req: Request, res: Response) {
+export async function getUser(req: ReqUserExt, res: Response) {
     try {
-        let id: string = req.body.id;
+        let id: string = req.user?._id!;
         let user = await userRepository.getById(id);
         if (!user.ok) res.status(403);
         return res.json(user);
