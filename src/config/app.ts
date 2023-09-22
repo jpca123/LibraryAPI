@@ -17,7 +17,7 @@ const PORT = env.PORT || 3800;
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, "/storage")));
+app.use(express.static(path.join(__dirname, "../storage")));
 
 //routers
 app.use(router);

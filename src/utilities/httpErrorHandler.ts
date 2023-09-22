@@ -5,6 +5,8 @@ export default function HttpErrorHandler(res: Response, err:any, status?: number
     console.log(err)
     res.json({
         ok: false,
-        errors: [{error: err.type || "Error", message: err.message || err._message || "Unknown error",}],
+        errors: [{
+            error: err.type || "Error", 
+            message: err.message || err.msg || err._message || "Unknown error"}],
     });
 }
