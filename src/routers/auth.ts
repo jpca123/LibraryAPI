@@ -9,8 +9,8 @@ router.post("/register", validateUser, register);
 router.post("/login", login);
 router.post("/logout", logout);
 router.post("/validSession", validSession);
-router.post("/forgot_password", forgotPassword);
-router.put("/reset_password/:token", changePassword);
+router.post("/forgot-password", forgotPassword);
+router.put("/reset-password/:token", changePassword);
 
 
 export {router};

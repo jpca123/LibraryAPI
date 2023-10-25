@@ -1,0 +1,200 @@
+paths:
+  /categories:
+    get:
+      tags:
+        - Categories
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+          description: "Number of page"
+          required: false
+        - in: query
+          name: limit
+          schema:
+            type: integer
+          description: "Cuantity of elements"
+          required: false
+      responses:
+        200:
+          description: "List of categories"
+          content:
+            application/json:
+              type: object
+              properties:
+                ok:
+                  type: boolean
+                  example: true
+                data:
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/Category"
+                paginator:
+                  page:
+                    type: integer
+                  limit:
+                    type: integer
+              example:
+                ok: true
+                data:
+                  - category: "category name"
+
+        400:
+          description: "Error in get"
+          content:
+            application/json:
+              type: object
+              schema:
+                $ref: "#/components/schemas/Error"
+    post:
+      tags:
+        - Categories
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Category"
+            example:
+              category: "category name"
+      responses:
+        200:
+          description: "Author created"
+          content:
+            application/json:
+              type: object
+              properties:
+                ok:
+                  type: boolean
+                  example: true
+                data:
+                  type: object
+                  schema:
+                    $ref: "#/components/schemas/Category"
+                    example:
+                      _id: "authorId"
+                      name: "authorName"
+                      lastName: "authorLastName"
+                      country: "authorCountry"
+              example:
+                ok: true
+                data:
+                  category: "category name"
+        400:
+          description: "Error to create"
+          content:
+            application/json:
+              type: object
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /categories/{id}:
+    get:
+      tags:
+        - Categories
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          description: "The id of the category"
+          required: true
+      responses:
+        200:
+          description: "Category Object"
+          content:
+            application/json:
+              type: object
+              properties:
+                ok:
+                  type: boolean
+                  example: true
+                data:
+                  schema:
+                    $ref: "#/components/schemas/Category"
+              example:
+                ok: true
+                data:
+                  _id: "authorId"
+                  category: "authorName"
+        400:
+          description: "Error in get"
+          content:
+            application/json:
+              type: object
+              schema:
+                $ref: "#/components/schemas/Error"
+    put:
+      tags:
+        - Categories
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          description: "The id of author"
+          required: true
+      responses:
+        200:
+          description: "Object Author"
+          content:
+            application/json:
+              type: object
+              properties:
+                ok:
+                  type: boolean
+                  example: true
+                data:
+                  schema:
+                    $ref: "#/components/schemas/Category"
+              example:
+                ok: true
+                data:
+                  _id: "authorId"
+                  name: "authorName"
+                  lastName: "authorLastName"
+                  country: "authorCountry"
+        400:
+          description: "Error to update"
+          content:
+            application/json:
+              type: object
+              schema:
+                $ref: "#/components/schemas/Error"
+
+    delete:
+      tags:
+        - Categories
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          description: "The id of category"
+          required: true
+      responses:
+        200:
+          description: "Object Category"
+          content:
+            application/json:
+              type: object
+              properties:
+                ok:
+                  type: boolean
+                  example: true
+              example:
+                ok: true
+        400:
+          description: "Error to delete"
+          content:
+            application/json:
+              type: object
+              schema:
+                $ref: "#/components/schemas/Error"

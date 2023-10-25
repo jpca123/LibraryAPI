@@ -1,0 +1,240 @@
+paths:
+  /users:
+    get:
+      tags:
+        - Users
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: "List of users"
+          content:
+            application/json:
+              type: object
+              properties:
+                ok:
+                  type: boolean
+                  example: true
+                data:
+                  type: array
+                  items:
+                    type: object
+                    schema:
+                      $ref: "#/components/schemas/User"
+                paginator:
+                  page:
+                    type: integer
+                  limit:
+                    type: integer
+              example:
+                ok: true
+                data:
+                  name: "Jaime"
+                  lastName: "Jaime01"
+                  userName: "Jaime01"
+                  gender: "Masculine"
+                  email: "JaimeOfficial@gmail.com"
+                  password: "password_seguro"
+        400:
+          description: "Error to get"
+          content:
+            application/json:
+              type: object
+              schema:
+                $ref: "#/components/schemas/Error"
+    put:
+      tags:
+        - Users
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        200:
+          description: "Author created"
+          content:
+            application/json:
+              type: object
+              properties:
+                ok:
+                  type: boolean
+                  example: true
+                data:
+                  type: object
+                  schema:
+                    $ref: "#/components/schemas/User"
+        400:
+          description: "Error on update"
+          content:
+            application/json:
+              type: object
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      tags:
+        - Users
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: "Author created"
+          content:
+            application/json:
+              type: object
+              properties:
+                ok:
+                  type: boolean
+                  example: true
+        400:
+          description: "Error to delete"
+          content:
+            application/json:
+              type: object
+              schema:
+                $ref: "#/components/schemas/Error"
+  /users/all:
+    get:
+      tags:
+        - Users
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: "User Object"
+          content:
+            application/json:
+              type: object
+              properties:
+                ok:
+                  type: boolean
+                  example: true
+                data:
+                  type: array
+                  items:
+                    schema:
+                      $ref: "#/components/schemas/User"
+              example:
+                ok: true
+                data:
+                  _id: "authorId"
+                  user: "authorName"
+        400:
+          description: "Error to get"
+          content:
+            application/json:
+              type: object
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /users/books:
+    get:
+      tags:
+        - Users
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: "User Object"
+          content:
+            application/json:
+              type: object
+              properties:
+                ok:
+                  type: boolean
+                  example: true
+                data:
+                  type: array
+                  items:
+                    schema:
+                      $ref: "#/components/schemas/Book"
+              example:
+                ok: true
+                data:
+                  - title: "The Most Book"
+                    poster: "https://valid url.com"
+                    categoryId: "CategoryId"
+                    authorId: "AuthorId"
+                    pages: 100
+                    document: "https://valid-url.com"
+        400:
+          description: "Error to get"
+          content:
+            application/json:
+              type: object
+              schema:
+                $ref: "#/components/schemas/Error"
+
+    post:
+      tags:
+        - Users
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        type: object
+        content:
+          application/json:
+            schema:
+              $rel: "#/components/schemas/UserBook"
+      responses:
+        200:
+          description: "Setting a favourite book"
+          content:
+            application/json:
+              type: object
+              properties:
+                ok:
+                  type: boolean
+                  example: true
+                data:
+                  type: object
+                  schema:
+                    $ref: "#/components/schemas/Book"
+              example:
+                ok: true
+                data:
+                  _id: "validId"
+                  bookId: "AuthorId"
+                  userId: "UserId"
+        400:
+          description: "Error To Set"
+          content:
+            application/json:
+              type: object
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /users/books/{bookId}:
+    delete:
+      parameters:
+        - in: path
+          name: bookId
+          description: "The favourite book to delete"
+          required: true
+      tags:
+        - Users
+      security:
+        - BearerAuth: []
+      responses:
+        200:
+          description: "Setting a favourite book"
+          content:
+            application/json:
+              type: object
+              properties:
+                ok:
+                  type: boolean
+                  example: true
+              example:
+                ok: true
+        400:
+          description: "Error to delete favourite book"
+          content:
+            application/json:
+              type: object
+              schema:
+                $ref: "#/components/schemas/Error"

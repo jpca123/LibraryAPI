@@ -64,7 +64,7 @@ export async function forgotPassword(req: Request, res: Response) {
     try {
         let {email} = req.body;
         await authRepository.forgotPassword(email);
-        return res.send({ok: true, message: "Mail send"});
+        return res.send({ok: true, data: {message: "Mail send"}});
     } catch (err: any) {
         return HttpErrorHandler(res, err);
     }

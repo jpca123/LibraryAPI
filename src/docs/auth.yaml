@@ -1,0 +1,173 @@
+paths:
+  /auth/register:
+    post:
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/User"
+      responses:
+        200:
+          description: "User create correct"
+          content:
+            application/json:
+              type: object
+              properties:
+                ok: boolean
+                data:
+                  schema:
+                    $ref: "#/components/schemas/User"
+              example:
+                ok: true
+                data:
+                  _id: "validId"
+                  name: "pepito"
+                  lastName: "pepito01"
+                  userName: "pepito01"
+                  gender: "Masculine"
+                  email: "pepitoOfficial@gmail.com"
+        400:
+          description: "Error in Create"
+          content:
+            application/json:
+              type: object
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /auth/login:
+    post:
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              userName: "pepito01"
+              password: "secure_password"
+      responses:
+        200:
+          description: "Correct login"
+          content:
+            application/json:
+              example:
+                ok: true
+                data:
+                  token: "----long-token----"
+        400:
+          description: "Error in login"
+          content:
+            application/json:
+              type: object
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /auth/logout:
+    post:
+      tags:
+        - Auth
+      responses:
+        200:
+          description: "Correct logout"
+          content:
+            application/json:
+              example:
+                ok: true
+        400:
+          description: "Error in logout"
+          content:
+            application/json:
+              type: object
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /auth/valid-session:
+    post:
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              token: "---long-token----"
+      responses:
+        200:
+          description: "Correct validate the session token"
+          content:
+            application/json:
+              example:
+                ok: true
+        400:
+          description: "Error in validation"
+          content:
+            application/json:
+              type: object
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /auth/forgot-password:
+    post:
+      tags:
+        - Auth
+      description: "Send a link to email to reset the password"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              email: "validEmail@gmail.com"
+      responses:
+        200:
+          description: "Validate the session token"
+          content:
+            application/json:
+              example:
+                ok: true
+                data:
+                  message: "mail sended"
+        400:
+          description: "Error in the resset proccess"
+          content:
+            application/json:
+              type: object
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /auth/reset-password/{token}:
+    post:
+      tags:
+        - Auth
+      description: "Reset the password in your email account"
+      parameters:
+        - in: path
+          name: token
+          schema:
+            type: string
+          required: true
+          description: "A Autogenerate token"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              password: "new_secure_password"
+      responses:
+        200:
+          description: "Validate the session token"
+          content:
+            application/json:
+              example:
+                ok: true
+                data:
+                  message: "mail sended"
+        400:
+          description: "Error in the resset proccess"
+          content:
+            application/json:
+              type: object
+              schema:
+                $ref: "#/components/schemas/Error"

@@ -10,7 +10,7 @@ let filesUpload = [{name: "poster", maxCount: 1},{name: 'document', maxCount: 1}
 
 // rutas
 router.get("/", getAllBooks);
-router.get("/titleBook:title", getBookByTitle);
+router.get("/titleBook/:title", getBookByTitle);
 router.get("/author/:id", getBookByAuthor);
 router.get("/category/:id", getBookByCategory);
 router.get("/:id", getBook);

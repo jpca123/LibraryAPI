@@ -1,0 +1,139 @@
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        lastName:
+          type: string
+        userName:
+          type: string
+        gender:
+          type: string
+          enum:
+            - Masculine
+            - Femenine
+            - Prefer not say
+        email:
+          type: string
+        password:
+          type: string
+      required:
+        - name
+        - userName
+        - gender
+        - email
+        - password
+      example:
+        name: "pepito"
+        lastName: "pepito01"
+        userName: "pepito01"
+        gender: "Masculine"
+        email: "pepitoOfficial@gmail.com"
+        password: "password_seguro"
+    UserBook:
+      type: object
+      properties:
+        userId:
+          type: string
+        bookId:
+          type: string
+      required:
+        - userId
+        - bookId
+    Session:
+      type: object
+      properties:
+        userId:
+          type: string
+        token:
+          type: string
+      required:
+        - userId
+        - token
+    Category:
+      type: object
+      properties:
+        category:
+          type: string
+      required:
+        - category
+      example:
+        category: "Terror"
+    Book:
+      type: object
+      properties:
+        title:
+          type: string
+        poster:
+          type: string
+          format: url
+        description:
+          type: string
+        date:
+          type: string
+          format: date
+        pages:
+          type: integer
+        document:
+          type: string
+          format: url
+        categoryId:
+          type: string
+        authorId:
+          type: string
+      required:
+        - title
+        - categoryId
+        - authorId
+      example:
+        _id: "validId"
+        title: "The Most Book"
+        poster: "https://valid-url.com"
+        categoryId: "CategoryId"
+        authorId: "AuthorId"
+        pages: 100
+        document: "https://valid-url.com"
+    Author:
+      type: object
+      properties:
+        name:
+          type: string
+        lastName:
+          type: string
+        country:
+          type: string
+        description:
+          type: string
+      required:
+        - name
+        - country
+      example:
+        name: "Pepito Pérez"
+        country: "Colombia"
+        description: "He is a the most"
+    Error:
+      type: object
+      properties:
+        ok: boolean
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              error: string
+              message: string
+      example:
+        ok: false
+        errors:
+          - error: "Error"
+            message: "Error Message"
+
+  securityDefinitions:
+    BearerAuth:
+      type: "bearer token"
+      name: "Authorization"
+      in: "header"

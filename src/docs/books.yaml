@@ -1,0 +1,362 @@
+paths:
+  /books:
+    get:
+      tags:
+        - Books
+      responses:
+        200:
+          description: "List of books"
+          content:
+            application/json:
+              type: object
+              properties:
+                ok:
+                  type: boolean
+                  example: true
+                data:
+                  type: array
+                  items:
+                    schema:
+                      $ref: "#/components/schemas/Book"
+                paginator:
+                  page:
+                    type: integer
+                  limit:
+                    type: integer
+              example:
+                ok: true
+                data:
+                  - title: "The Most Book"
+                    poster: "https://valid-url.com"
+                    bookId: "BookId"
+                    authorId: "AuthorId"
+                    pages: 100
+                    document: "https://valid-url.com"
+        400:
+          description: "Error Get"
+          content:
+            application/json:
+              type: object
+              schema:
+                $ref: "#/components/schemas/Error"
+    post:
+      tags:
+        - Books
+      security:
+        - BearerAuth: []
+      consumes:
+        - multipart/form-data
+      parameters:
+        - in: formData
+          name: poster
+          type: file
+          required: false
+          description: "The poster of the book"
+        - in: formData
+          name: document
+          type: file
+          required: false
+          description: "The document of the book"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Book"
+      responses:
+        200:
+          description: "Author created"
+          content:
+            application/json:
+              type: object
+              properties:
+                ok:
+                  type: boolean
+                  example: true
+                data:
+                  type: object
+                  schema:
+                    $ref: "#/components/schemas/Book"
+              example:
+                ok: true
+                data:
+                  title: "The Most Book"
+                  poster: "https://valid-url.com"
+                  bookId: "BookId"
+                  authorId: "AuthorId"
+                  pages: 100
+                  document: "https://valid-url.com"
+        400:
+          description: "Error to create"
+          content:
+            application/json:
+              type: object
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /books/{id}:
+    get:
+      tags:
+        - Books
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          description: "The id of the book"
+          required: true
+      responses:
+        200:
+          description: "Book Object"
+          content:
+            application/json:
+              type: object
+              properties:
+                ok:
+                  type: boolean
+                  example: true
+                data:
+                  schema:
+                    $ref: "#/components/schemas/Book"
+              example:
+                ok: true
+                data:
+                  title: "The Most Book"
+                  poster: "https://valid-url.com"
+                  bookId: "BookId"
+                  authorId: "AuthorId"
+                  pages: 100
+                  document: "https://valid-url.com"
+        400:
+          description: "Error in get"
+          content:
+            application/json:
+              type: object
+              schema:
+                $ref: "#/components/schemas/Error"
+    put:
+      tags:
+        - Books
+      security:
+        - BearerAuth: []
+      consumes:
+        - multipart/form-data
+      parameters:
+        - in: formData
+          name: poster
+          type: file
+          required: false
+          description: "The poster of the book"
+        - in: formData
+          name: document
+          type: file
+          required: false
+          description: "The document of the book"
+        - in: path
+          name: id
+          schema:
+            type: string
+          description: "The id of author"
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Book"
+      responses:
+        200:
+          description: "Object Author"
+          content:
+            application/json:
+              type: object
+              properties:
+                ok:
+                  type: boolean
+                  example: true
+                data:
+                  schema:
+                    $ref: "#/components/schemas/Book"
+              example:
+                ok: true
+                data:
+                  _id: "authorId"
+                  name: "authorName"
+                  lastName: "authorLastName"
+                  country: "authorCountry"
+        400:
+          description: "Error to update"
+          content:
+            application/json:
+              type: object
+              schema:
+                $ref: "#/components/schemas/Error"
+
+    delete:
+      tags:
+        - Books
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          description: "The id of book"
+          required: true
+      responses:
+        200:
+          description: "Object Book deleted"
+          content:
+            application/json:
+              type: object
+              properties:
+                ok:
+                  type: boolean
+                  example: true
+              example:
+                ok: true
+        400:
+          description: "Error to delete"
+          content:
+            application/json:
+              type: object
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /books/titleBook/{title}:
+    get:
+      tags:
+        - Books
+      parameters:
+        - in: path
+          name: title
+          schema:
+            type: string
+          description: "The title of the book"
+          required: true
+      responses:
+        200:
+          description: "Book Object"
+          content:
+            application/json:
+              type: object
+              properties:
+                ok:
+                  type: boolean
+                  example: true
+                data:
+                  schema:
+                    $ref: "#/components/schemas/Book"
+              example:
+                ok: true
+                data:
+                  title: "The Most Book"
+                  poster: "https://valid-url.com"
+                  bookId: "BookId"
+                  authorId: "AuthorId"
+                  pages: 100
+                  document: "https://valid-url.com"
+        400:
+          description: "Error in get"
+          content:
+            application/json:
+              type: object
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /books/author/{id}:
+    get:
+      tags:
+        - Books
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          description: "The id of the book author"
+          required: true
+      responses:
+        200:
+          description: "List of books of author id"
+          content:
+            application/json:
+              type: object
+              properties:
+                ok:
+                  type: boolean
+                  example: true
+                data:
+                  type: array
+                  items:
+                    schema:
+                      $ref: "#/components/schemas/Book"
+                paginator:
+                  page:
+                    type: integer
+                  limit:
+                    type: integer
+              example:
+                ok: true
+                data:
+                  - title: "The Most Book"
+                    poster: "https://valid-url.com"
+                    bookId: "BookId"
+                    authorId: "AuthorId"
+                    pages: 100
+                    document: "https://valid-url.com"
+        400:
+          description: "Error in get"
+          content:
+            application/json:
+              type: object
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /books/category/{id}:
+    get:
+      tags:
+        - Books
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          description: "The id of the book category"
+          required: true
+      responses:
+        200:
+          description: "List of books of category id"
+          content:
+            application/json:
+              type: object
+              properties:
+                ok:
+                  type: boolean
+                  example: true
+                data:
+                  type: array
+                  items:
+                    schema:
+                      $ref: "#/components/schemas/Book"
+                paginator:
+                  page:
+                    type: integer
+                  limit:
+                    type: integer
+              example:
+                ok: true
+                data:
+                  - title: "The Most Book"
+                    poster: "https://valid-url.com"
+                    bookId: "BookId"
+                    authorId: "AuthorId"
+                    pages: 100
+                    document: "https://valid-url.com"
+        400:
+          description: "Error in get"
+          content:
+            application/json:
+              type: object
+              schema:
+                $ref: "#/components/schemas/Error"

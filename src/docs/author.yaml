@@ -1,0 +1,192 @@
+paths:
+  /authors:
+    get:
+      tags:
+        - Authors
+      parameters:
+        - in: query
+          name: page
+          schema:
+            type: integer
+          description: "Number of page"
+          required: false
+        - in: query
+          name: limit
+          schema:
+            type: integer
+          description: "Cuantity of elements"
+          required: false
+      responses:
+        200:
+          description: "List of authors"
+          content:
+            application/json:
+              type: object
+              properties:
+                ok:
+                  type: boolean
+                  example: true
+                data:
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/Author"
+                  example:
+                    - _id: "authorId"
+                      name: "authorName"
+                      lastName: "authorLastName"
+                      country: "authorCountry"
+                paginator:
+                  page:
+                    type: integer
+                  limit:
+                    type: integer
+        400:
+          description: "Error in get"
+          content:
+            application/json:
+              type: object
+              schema:
+                $ref: "#/components/schemas/Error"
+    post:
+      tags:
+        - Authors
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Author"
+            example:
+              _id: "authorId"
+              name: "authorName"
+              lastName: "authorLastName"
+              country: "authorCountry"
+      responses:
+        200:
+          description: "Author created"
+          content:
+            application/json:
+              type: object
+              properties:
+                ok:
+                  type: boolean
+                  example: true
+                data:
+                  type: object
+                  schema:
+                    $ref: "#/components/schemas/Author"
+                    example:
+                      _id: "authorId"
+                      name: "authorName"
+                      lastName: "authorLastName"
+                      country: "authorCountry"
+        400:
+          description: "Error to create"
+          content:
+            application/json:
+              type: object
+              schema:
+                $ref: "#/components/schemas/Error"
+  /authors/{id}:
+    get:
+      tags:
+        - Authors
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          description: "The id of author"
+          required: true
+      responses:
+        200:
+          description: "Object Author"
+          content:
+            application/json:
+              type: object
+              properties:
+                ok:
+                  type: boolean
+                  example: true
+                data:
+                  schema:
+                    $ref: "#/components/schemas/Author"
+              example:
+                ok: true
+                data:
+                  _id: "authorId"
+                  name: "authorName"
+                  lastName: "authorLastName"
+                  country: "authorCountry"
+
+    put:
+      tags:
+        - Authors
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          description: "The id of author"
+          required: true
+      responses:
+        200:
+          description: "Object Author"
+          content:
+            application/json:
+              type: object
+              properties:
+                ok:
+                  type: boolean
+                  example: true
+                data:
+                  schema:
+                    $ref: "#/components/schemas/Author"
+              example:
+                ok: true
+                data:
+                  _id: "authorId"
+                  name: "authorName"
+                  lastName: "authorLastName"
+                  country: "authorCountry"
+        400:
+          description: "Error in get"
+          content:
+            application/json:
+              type: object
+              schema:
+                $ref: "#/components/schemas/Error"
+
+    delete:
+      tags:
+        - Authors
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+          description: "The id of author"
+          required: true
+      responses:
+        200:
+          description: "Object Author"
+          content:
+            application/json:
+              type: object
+              properties:
+                ok:
+                  type: boolean
+                  example: true
+        400:
+          description: "Error to delete"
+          content:
+            application/json:
+              type: object
+              schema:
+                $ref: "#/components/schemas/Error"
