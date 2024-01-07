@@ -92,7 +92,7 @@ export async function createBook(req: Request, res: Response) {
         // confguracion de la ruta del poster
         if (poster) {
             let urlPoster = null;
-            urlPoster = `${env.APP_URL}/${poster?.filename}`;
+            urlPoster = new URL(`${req.protocol}:${req.headers.host}/${poster?.filename}`);
             req.body.poster = urlPoster;
         }
         else req.body.poster = "";
@@ -100,7 +100,7 @@ export async function createBook(req: Request, res: Response) {
         // confguracion de la ruta del file
         if (document) {
             let urlDocument = null;
-            urlDocument = `${env.APP_URL}/${document?.filename}`;
+            urlDocument = new URL(`${req.protocol}:${req.headers.host}/${document?.filename}`);
             req.body.document = urlDocument;
         }
         else req.body.document = "";
@@ -131,7 +131,7 @@ export async function updateBook(req: Request, res: Response) {
         // confguracion de la ruta del poster
         if (poster) {
             let urlPoster = null;
-            urlPoster = `${env.APP_URL}/${poster?.filename}`;
+            urlPoster = new URL(`${req.protocol}:${req.headers.host}/${poster?.filename}`);
             req.body.poster = urlPoster;
         }
         else req.body.poster = "";
@@ -139,7 +139,7 @@ export async function updateBook(req: Request, res: Response) {
         // confguracion de la ruta del file
         if (document) {
             let urlDocument = null;
-            urlDocument = `${env.APP_URL}/${document?.filename}`;
+            urlDocument = new URL(`${req.protocol}:${req.headers.host}/${document?.filename}`);
             req.body.document = urlDocument;
         }
         else req.body.document = "";
